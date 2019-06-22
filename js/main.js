@@ -23,7 +23,7 @@ var getRandomFromInterval = function (min, max) {
   return random;
 };
 
-var getAdvert = function () {
+var getAdvert = function (i) {
   var avatarSrc = 'img/avatars/user0' + parseInt(i + 1, 10) + '.png';
   var offerType = TYPES[getRandomFromInterval(0, TYPES.length - 1)];
   var mapWidth = map.offsetWidth; // ширина карты
@@ -48,7 +48,7 @@ var getAdvert = function () {
 
 /* сформируем массив объявлений */
 for (var i = 0; i < ADVERT_COUNT; i++) {
-  var advertItem = getAdvert();
+  var advertItem = getAdvert(i);
   adverts.push(advertItem);
 }
 
