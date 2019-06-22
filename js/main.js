@@ -19,13 +19,13 @@ var advertTemplate = document.querySelector('#pin')
 
 // функция генерации случайного числа
 var getRandomFromInterval = function (min, max) {
-  var random = Math.floor(Math.random() * (max - min + 1) ) + min;
+  var random = Math.floor(Math.random() * (max - min + 1)) + min;
   return random;
 };
 
 var getAdvert = function () {
-  var avatarSrc = 'img/avatars/user0' + getRandomFromInterval(1,8) + '.png';
-  var offerType = TYPES[getRandomFromInterval(0,TYPES.length - 1)];
+  var avatarSrc = 'img/avatars/user0' + getRandomFromInterval(1, 8) + '.png';
+  var offerType = TYPES[getRandomFromInterval(0, TYPES.length - 1)];
   var mapWidth = map.offsetWidth; // ширина карты
   var locationX = getRandomFromInterval(0, mapWidth);
   var locationY = getRandomFromInterval(MAP_TOP, MAP_BOTTOM);
@@ -52,20 +52,20 @@ for (var i = 0; i < ADVERT_COUNT; i++) {
   adverts.push(advertItem);
 }
 
-console.log(adverts);
+// console.log(adverts);
 
-var renderAdvert = function(advert) {
+var renderAdvert = function (advert) {
   var advertElement = advertTemplate.cloneNode(true);
   var advertImg = advertElement.querySelector('img');
 
-  advertElement.style.left = adverts[i].location.x - ADVERT_WIDTH / 2 + 'px';
-  advertElement.style.top = adverts[i].location.y - ADVERT_HEIGHT + 'px';
-  advertImg.setAttribute('src', adverts[i].author.avatar);
-  advertImg.setAttribute('alt', adverts[i].offer.type);
+  advertElement.style.left = advert.location.x - ADVERT_WIDTH / 2 + 'px';
+  advertElement.style.top = advert.location.y - ADVERT_HEIGHT + 'px';
+  advertImg.setAttribute('src', advert.author.avatar);
+  advertImg.setAttribute('alt', advert.offer.type);
   advertList.appendChild(advertElement);
 
   return advertElement;
-}
+};
 
 var fragment = document.createDocumentFragment();
 for (i = 0; i < adverts.length; i++) {
