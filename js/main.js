@@ -3,7 +3,7 @@
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var MAP_TOP = 130;
 var MAP_BOTTOM = 630;
-var ADVERT_COUNT = 5;
+var ADVERT_COUNT = 8;
 var ADVERT_WIDTH = 50;
 var ADVERT_HEIGHT = 70;
 
@@ -24,7 +24,7 @@ var getRandomFromInterval = function (min, max) {
 };
 
 var getAdvert = function () {
-  var avatarSrc = 'img/avatars/user0' + getRandomFromInterval(1, 8) + '.png';
+  var avatarSrc = 'img/avatars/user0' + parseInt(i + 1, 10) + '.png';
   var offerType = TYPES[getRandomFromInterval(0, TYPES.length - 1)];
   var mapWidth = map.offsetWidth; // ширина карты
   var locationX = getRandomFromInterval(0, mapWidth);
@@ -60,8 +60,8 @@ var renderAdvert = function (advert) {
 
   advertElement.style.left = advert.location.x - ADVERT_WIDTH / 2 + 'px';
   advertElement.style.top = advert.location.y - ADVERT_HEIGHT + 'px';
-  advertImg.setAttribute('src', advert.author.avatar);
-  advertImg.setAttribute('alt', advert.offer.type);
+  advertImg.src = advert.author.avatar;
+  advertImg.alt = advert.offer.type;
   advertList.appendChild(advertElement);
 
   return advertElement;
