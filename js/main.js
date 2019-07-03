@@ -7,6 +7,9 @@ var ADVERT_COUNT = 8;
 var ADVERT_WIDTH = 50;
 var ADVERT_HEIGHT = 70;
 
+// var PEAK_WIDTH = 10; // ширина пика
+var PEAK_HEIGHT = 22; // высота пика
+
 var adverts = []; // массив объявлений
 
 var map = document.querySelector('.map'); // блок карты
@@ -137,6 +140,13 @@ pinMain.addEventListener('mouseup', function () {
   }
 
   formTextarea.removeAttribute('disabled', 'disabled');
+
+  // расчитаем начальные координаты метки в момент активации
+  var xPinStart = xPinMain;
+  var yPinStart = topPinMain + widthPinMain + PEAK_HEIGHT;
+
+  // поле адреса должно быть заполнено, исходное значение поля адреса - середина метки
+  inputAddress.setAttribute('value', xPinStart + ', ' + yPinStart);
 
   // выводим метки на страницу
   advertList.appendChild(fragment);
