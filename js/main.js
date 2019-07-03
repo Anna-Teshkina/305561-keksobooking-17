@@ -92,6 +92,9 @@ for (i = 0; i < formBtns.length; i++) {
   formBtns[i].setAttribute('disabled', 'disabled');
 }
 
+var formTextarea = formAd.querySelector('textarea');
+formTextarea.setAttribute('disabled', 'disabled');
+
 // элементы управления формы с фильтрами .map__filters заблокирована так же, как и форма .ad-form;
 var mapFilters = document.querySelector('.map__filters');
 var mapFiltersSelect = mapFilters.querySelectorAll('select');
@@ -109,6 +112,9 @@ var topPinMain = pinMain.offsetTop; // расстояние от метки до
 var xPinMain = leftPinMain + radiusPinMain; // начальная координата метки до смещения (ось абсцисс)
 var yPinMain = topPinMain + radiusPinMain; // начальная координата метки до смещения (ось ординат)
 
+// поле адреса должно быть заполнено, исходное значение поля адреса - середина метки
+var inputAddress = formAd.querySelector('#address');
+inputAddress.setAttribute('value', xPinMain + ', ' + yPinMain);
 
 pinMain.addEventListener('mouseup', function () {
   // переводим карту в активное состояние
@@ -130,9 +136,7 @@ pinMain.addEventListener('mouseup', function () {
     formBtns[i].removeAttribute('disabled', 'disabled');
   }
 
-  // поле адреса должно быть заполнено, исходное значение поля адреса - середина метки
-  var inputAddress = formAd.querySelector('#address');
-  inputAddress.setAttribute('value', xPinMain + ', ' + yPinMain);
+  formTextarea.removeAttribute('disabled', 'disabled');
 
   // выводим метки на страницу
   advertList.appendChild(fragment);
