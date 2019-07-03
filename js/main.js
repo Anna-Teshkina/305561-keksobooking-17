@@ -1,5 +1,6 @@
 'use strict';
 
+/* MODULE3_TASK1 */
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var MAP_TOP = 130;
 var MAP_BOTTOM = 630;
@@ -9,6 +10,8 @@ var ADVERT_HEIGHT = 70;
 
 // var PEAK_WIDTH = 10; // ширина пика
 var PEAK_HEIGHT = 22; // высота пика
+
+var MIN_PRICE = [0, 1000, 5000, 10000]; // массив минимальной цены
 
 var adverts = []; // массив объявлений
 
@@ -74,6 +77,8 @@ for (i = 0; i < adverts.length; i++) {
   fragment.appendChild(renderAdvert(adverts[i]));
 }
 
+
+/* MODULE4_TASK1 */
 // При первом открытии, страница находится в неактивном состоянии:
 // блок с картой находится в неактивном состоянии, форма подачи заявления заблокирована.
 
@@ -145,9 +150,52 @@ pinMain.addEventListener('mouseup', function () {
   var xPinStart = xPinMain;
   var yPinStart = topPinMain + widthPinMain + PEAK_HEIGHT;
 
-  // поле адреса должно быть заполнено, исходное значение поля адреса - середина метки
+  // поле адреса должно быть заполнено, исходное значение поля адреса - острый конец метки
   inputAddress.setAttribute('value', xPinStart + ', ' + yPinStart);
 
   // выводим метки на страницу
   advertList.appendChild(fragment);
+});
+
+
+/* MODULE4_TASK2 */
+// Поле «Тип жилья» влияет на минимальное значение поля «Цена за ночь»
+// Вместе с минимальным значением цены нужно изменять и плейсхолдер.
+
+var selectType = formAd.querySelector('#type'); // селектор - тип жилья
+var selectedTypeIndex = selectType.options.selectedIndex; // индекс выбранного типа жилья
+var inputPrice = formAd.querySelector('#price'); // поле - цена за ночь
+
+// в зависимости от типа жилья изменяет минимальную цену за ночь
+var setMinPrice = function (index) {
+  inputPrice.setAttribute('min', MIN_PRICE[index]);
+  inputPrice.setAttribute('placeholder', MIN_PRICE[index]);
+};
+
+// при загрузке определяем выбранный тип жилья и выставляем соответствующую минимальную цену
+setMinPrice(selectedTypeIndex);
+
+// при изменении выбранного типа жилья выставляем соответствующую минимальную цену
+selectType.addEventListener('change', function () {
+  selectedTypeIndex = selectType.options.selectedIndex;
+  setMinPrice(selectedTypeIndex);
+});
+
+// Поля «Время заезда» и «Время выезда» синхронизированы:
+// при изменении значения одного поля, во втором выделяется соответствующее ему.
+var selectTimeIn = formAd.querySelector('#timein'); // время заезда
+var selectTimeOut = formAd.querySelector('#timeout'); // время выезда
+
+var changeTime = function (timeChanged, timeForChanging) {
+  var index = timeChanged.options.selectedIndex;
+  timeForChanging.options[index].selected = true;
+};
+
+// при изменении поля «Время заезда» меняем поле «Время выезда» и наоборот
+selectTimeIn.addEventListener('change', function () {
+  changeTime(selectTimeIn, selectTimeOut);
+});
+
+selectTimeOut.addEventListener('change', function () {
+  changeTime(selectTimeOut, selectTimeIn);
 });
