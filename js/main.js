@@ -11,8 +11,6 @@ var ADVERT_HEIGHT = 70;
 // var PEAK_WIDTH = 10; // ширина пика
 var PEAK_HEIGHT = 22; // высота пика
 
-var MIN_PRICE = [0, 1000, 5000, 10000]; // массив минимальной цены
-
 var adverts = []; // массив объявлений
 
 var map = document.querySelector('.map'); // блок карты
@@ -166,10 +164,18 @@ var selectType = formAd.querySelector('#type'); // селектор - тип ж�
 var selectedTypeIndex = selectType.options.selectedIndex; // индекс выбранного типа жилья
 var inputPrice = formAd.querySelector('#price'); // поле - цена за ночь
 
+// ключ объекта: тип жилья, значение: минимальная цена соответствующая данному типу жилья
+var minPricesArray = {
+  0: 0,
+  1: 2500,
+  2: 5000,
+  3: 10000
+};
+
 // в зависимости от типа жилья изменяет минимальную цену за ночь
 var setMinPrice = function (index) {
-  inputPrice.setAttribute('min', MIN_PRICE[index]);
-  inputPrice.setAttribute('placeholder', MIN_PRICE[index]);
+  inputPrice.setAttribute('min', minPricesArray[index]);
+  inputPrice.setAttribute('placeholder', minPricesArray[index]);
 };
 
 // при загрузке определяем выбранный тип жилья и выставляем соответствующую минимальную цену
