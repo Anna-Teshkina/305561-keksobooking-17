@@ -161,30 +161,32 @@ pinMain.addEventListener('mouseup', function () {
 // Вместе с минимальным значением цены нужно изменять и плейсхолдер.
 
 var selectType = formAd.querySelector('#type'); // селектор - тип жилья
-var selectedTypeIndex = selectType.options.selectedIndex; // индекс выбранного типа жилья
+// var selectedTypeIndex = selectType.options.selectedIndex; // индекс выбранного типа жилья
+var selectedTypeValue = selectType.value;
+console.log("selectedTypeValue =", selectedTypeValue);
 var inputPrice = formAd.querySelector('#price'); // поле - цена за ночь
 
 // ключ объекта: тип жилья, значение: минимальная цена соответствующая данному типу жилья
 var minPricesArray = {
-  0: 0,
-  1: 2500,
-  2: 5000,
-  3: 10000
+  bungalo: 0,
+  flat: 2500,
+  house: 5000,
+  palace: 10000
 };
 
 // в зависимости от типа жилья изменяет минимальную цену за ночь
-var setMinPrice = function (index) {
-  inputPrice.setAttribute('min', minPricesArray[index]);
-  inputPrice.setAttribute('placeholder', minPricesArray[index]);
+var setMinPrice = function (value) {
+  inputPrice.setAttribute('min', minPricesArray[value]);
+  inputPrice.setAttribute('placeholder', minPricesArray[value]);
 };
 
 // при загрузке определяем выбранный тип жилья и выставляем соответствующую минимальную цену
-setMinPrice(selectedTypeIndex);
+setMinPrice(selectedTypeValue);
 
 // при изменении выбранного типа жилья выставляем соответствующую минимальную цену
 selectType.addEventListener('change', function () {
-  selectedTypeIndex = selectType.options.selectedIndex;
-  setMinPrice(selectedTypeIndex);
+  selectedTypeValue = selectType.value;
+  setMinPrice(selectedTypeValue);
 });
 
 // Поля «Время заезда» и «Время выезда» синхронизированы:
