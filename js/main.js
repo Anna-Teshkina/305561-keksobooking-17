@@ -161,9 +161,7 @@ pinMain.addEventListener('mouseup', function () {
 // Вместе с минимальным значением цены нужно изменять и плейсхолдер.
 
 var selectType = formAd.querySelector('#type'); // селектор - тип жилья
-// var selectedTypeIndex = selectType.options.selectedIndex; // индекс выбранного типа жилья
-var selectedTypeValue = selectType.value;
-console.log("selectedTypeValue =", selectedTypeValue);
+var selectedTypeValue = selectType.value; // значение выбранного типа жилья
 var inputPrice = formAd.querySelector('#price'); // поле - цена за ночь
 
 // ключ объекта: тип жилья, значение: минимальная цена соответствующая данному типу жилья
