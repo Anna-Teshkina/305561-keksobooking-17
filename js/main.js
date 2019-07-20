@@ -11,10 +11,10 @@ var ADVERT_HEIGHT = 70;
 // var PEAK_WIDTH = 10; // ширина пика
 var PEAK_HEIGHT = 22; // высота пика
 
-var minY = 130;
-var maxY = 630;
-var minX = 0;
-var maxX = 1135;
+var MIN_Y = 130;
+var MAX_Y = 630;
+var MIN_X = 0;
+var MAX_X = 1135;
 
 var adverts = []; // массив объявлений
 
@@ -177,35 +177,28 @@ pinMain.addEventListener('mousedown', function (evt) {
     // console.log("---------------------------------");
     // console.log("---------------------------------");
 
-    // // сначала поставим ограничение на движение пина по оси Х
-    // // ширина карты 1200px, т.о для абсолютно-спозиционированного элемента
-    // // ограничение для левой координаты: 0px и (1200 - 65) = 1135px
-    // // расчет координат указан с учетом ширины макера (пункт 4.5 ТЗ)
+    // сначала поставим ограничение на движение пина по оси Х
+    // ширина карты 1200px, т.о для абсолютно-спозиционированного элемента
+    // ограничение для левой координаты: 0px и (1200 - 65) = 1135px
+    // расчет координат указан с учетом ширины макера (пункт 4.5 ТЗ)
 
-    if ((pinMain.offsetLeft - shift.x < minX) || (pinMain.offsetLeft - shift.x > maxX)) {
-      if (pinMain.offsetLeft - shift.x < minX) {
-        leftPinMain = minX;
-        pinMain.style.left = minX;
-      }
-      if (pinMain.offsetLeft - shift.x > maxX) {
-        leftPinMain = maxX;
-        pinMain.style.left = maxX;
-      }
+    if (pinMain.offsetLeft - shift.x < MIN_X) {
+      leftPinMain = MIN_X;
+      pinMain.style.left = MIN_X;
+    } else if (pinMain.offsetLeft - shift.x > MAX_X) {
+      leftPinMain = MAX_X;
+      pinMain.style.left = MAX_X;
     } else {
       leftPinMain = pinMain.offsetLeft;
       pinMain.style.left = (pinMain.offsetLeft - shift.x) + 'px';
     }
 
-    // ограничение по оси Y от 130 до 630
-    if ((pinMain.offsetTop - shift.y < minY) || (pinMain.offsetTop - shift.y > maxY)) {
-      if (pinMain.offsetTop - shift.y < minY) {
-        topPinMain = minY;
-        pinMain.style.top = minY;
-      }
-      if (pinMain.offsetTop - shift.y > maxY) {
-        topPinMain = maxY;
-        pinMain.style.top = maxY;
-      }
+    if (pinMain.offsetTop - shift.y < MIN_Y) {
+      topPinMain = MIN_Y;
+      pinMain.style.top = MIN_Y;
+    } else if (pinMain.offsetTop - shift.y > MAX_Y) {
+      topPinMain = MAX_Y;
+      pinMain.style.top = MAX_Y;
     } else {
       topPinMain = pinMain.offsetTop;
       pinMain.style.top = (pinMain.offsetTop - shift.y) + 'px';
