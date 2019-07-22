@@ -1,6 +1,7 @@
 'use strict';
 
-// модуль, который работает с формой объявления
+// модуль, который отвечает за перемещение метки по карте,
+// установку координат метки в поле адреса
 (function () {
   var MIN_Y = 130;
   var MAX_Y = 630;
@@ -9,58 +10,45 @@
 
   // При первом открытии, страница находится в неактивном состоянии:
   // блок с картой находится в неактивном состоянии, форма подачи заявления заблокирована.
-
   // элементы управления формы (input, select и т.д.) должны быть неактивны в исходном состоянии
-  var formAd = document.querySelector('.ad-form');
 
-  var formInput = formAd.querySelectorAll('input');
-  for (var i = 0; i < formInput.length; i++) {
-    formInput[i].setAttribute('disabled', 'disabled');
-  }
+  var formInput = window.form.formAd.querySelectorAll('input');
+  var formSelect = window.form.formAd.querySelectorAll('select');
+  var formBtns = window.form.formAd.querySelectorAll('button');
+  var formTextarea = window.form.formAd.querySelector('textarea');
 
-  var formSelect = formAd.querySelectorAll('select');
-  for (i = 0; i < formSelect.length; i++) {
-    formSelect[i].setAttribute('disabled', 'disabled');
-  }
+  // в исходном состоянии устанавливаем для элементов формы атрибут disabled
+  var setDisabledAttribute = function (array) {
+    for (var i = 0; i < array.length; i++) {
+      array[i].setAttribute('disabled', 'disabled');
+    }
+  };
 
-  var formBtns = formAd.querySelectorAll('button');
-  for (i = 0; i < formBtns.length; i++) {
-    formBtns[i].setAttribute('disabled', 'disabled');
-  }
-
-  var formTextarea = formAd.querySelector('textarea');
-  formTextarea.setAttribute('disabled', 'disabled');
+  setDisabledAttribute(formInput);
+  setDisabledAttribute(formSelect);
+  setDisabledAttribute(formBtns);
+  setDisabledAttribute(formTextarea);
 
   // элементы управления формы с фильтрами .map__filters заблокирована так же, как и форма .ad-form;
   var mapFilters = document.querySelector('.map__filters');
   var mapFiltersSelect = mapFilters.querySelectorAll('select');
-  for (i = 0; i < mapFiltersSelect.length; i++) {
+  for (var i = 0; i < mapFiltersSelect.length; i++) {
     mapFiltersSelect[i].setAttribute('disabled', 'disabled');
   }
 
   var pinMain = window.data.map.querySelector('.map__pin--main');
   var widthPinMain = pinMain.offsetWidth; // ширина метки
   var radiusPinMain = widthPinMain / 2; // радиус метки
-  // console.log('widthPinMain', widthPinMain);
-  // console.log('radiusPinMain', radiusPinMain);
-
 
   var leftPinMain = pinMain.offsetLeft; // расстояние от метки до левого края карты
   var topPinMain = pinMain.offsetTop; // расстояние от метки до верха карты
-  // console.log('leftPinMain', leftPinMain);
-  // console.log('topPinMain', topPinMain);
-
 
   var xPinMain = leftPinMain + radiusPinMain; // начальная координата метки до смещения (ось абсцисс)
   var yPinMain = topPinMain + radiusPinMain; // начальная координата метки до смещения (ось ординат)
-  // console.log('xPinMain', widthPinMain);
-  // console.log('yPinMain', radiusPinMain);
 
   // поле адреса должно быть заполнено, исходное значение поля адреса - середина метки
-  var inputAddress = formAd.querySelector('#address');
+  var inputAddress = window.form.formAd.querySelector('#address');
   inputAddress.setAttribute('value', xPinMain + ', ' + yPinMain);
-
-  // модуль 5.
 
   pinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -72,7 +60,7 @@
 
     var startPinCoords = {
       x: leftPinMain + radiusPinMain,
-      y: topPinMain + widthPinMain + window.PEAK_HEIGHT
+      y: topPinMain + widthPinMain + window.data.PEAK_HEIGHT
     };
 
     var dragged = false; // флаг (true - перемещение было, false - перемещения не было)
@@ -81,26 +69,15 @@
       dragged = true;
       moveEvt.preventDefault();
 
-      // console.log(moveEvt.clientX, moveEvt.clientY);
-
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
       };
 
-      // console.log(shift.x, shift.y);
-      // console.log("---------------------------------");
-
       startCoords = {
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-
-      // console.log(pinMain.offsetTop - shift.y);
-      // console.log(pinMain.offsetLeft - shift.x);
-      // console.log(pinMain.offsetTop);
-      // console.log("---------------------------------");
-      // console.log("---------------------------------");
 
       // сначала поставим ограничение на движение пина по оси Х
       // ширина карты 1200px, т.о для абсолютно-спозиционированного элемента
@@ -143,22 +120,19 @@
       window.data.map.classList.remove('map--faded');
 
       // переводим форму и поля формы в активное состояние
-      formAd.classList.remove('ad-form--disabled');
+      window.form.formAd.classList.remove('ad-form--disabled');
 
       // в активном состоянии элементы управления формы (input, select и т.д.) должны быть активны
-      for (i = 0; i < formInput.length; i++) {
-        formInput[i].removeAttribute('disabled', 'disabled');
-      }
+      var removeDisabledAttribute = function (array) {
+        for (i = 0; i < array.length; i++) {
+          array[i].removeAttribute('disabled', 'disabled');
+        }
+      };
 
-      for (i = 0; i < formSelect.length; i++) {
-        formSelect[i].removeAttribute('disabled', 'disabled');
-      }
-
-      for (i = 0; i < formBtns.length; i++) {
-        formBtns[i].removeAttribute('disabled', 'disabled');
-      }
-
-      formTextarea.removeAttribute('disabled', 'disabled');
+      removeDisabledAttribute(formInput);
+      removeDisabledAttribute(formSelect);
+      removeDisabledAttribute(formBtns);
+      removeDisabledAttribute(formTextarea);
 
       // выводим метки на страницу
       window.data.advertList.appendChild(window.data.fragment);

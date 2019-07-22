@@ -52,4 +52,8 @@
   selectTimeOut.addEventListener('change', function () {
     changeTime(selectTimeOut, selectTimeIn);
   });
+
+  window.form = {
+    formAd: formAd
+  };
 })();
