@@ -135,7 +135,7 @@
       removeDisabledAttribute(formTextarea);
 
       // выводим метки на страницу
-      window.data.advertList.appendChild(window.data.fragment);
+      window.pin.pinList.appendChild(window.pin.fragmentPin);
 
       if (!dragged) {
         startPinCoords = {
