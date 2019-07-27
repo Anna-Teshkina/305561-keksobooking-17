@@ -40,14 +40,32 @@
     return pinElement;
   };
 
-  var fragmentPin = document.createDocumentFragment();
-  for (var i = 0; i < window.data.adverts.length; i++) {
-    fragmentPin.appendChild(renderPin(window.data.adverts[i]));
-  }
+  var checkInterval = setInterval(function () {
+    if (window.data.adverts !== undefined) {
+      clearInterval(checkInterval);
+      // console.log(window.data.adverts);
 
-  window.pin = {
-    pinList: pinList,
-    fragmentPin: fragmentPin
-  };
+      var fragmentPin = document.createDocumentFragment();
+      for (var i = 0; i < window.data.adverts.length; i++) {
+        fragmentPin.appendChild(renderPin(window.data.adverts[i]));
+      }
+
+      window.pin = {
+        pinList: pinList,
+        fragmentPin: fragmentPin
+      };
+
+    }
+  }, 1000);
+
+  // var fragmentPin = document.createDocumentFragment();
+  // for (var i = 0; i < window.data.adverts.length; i++) {
+  //   fragmentPin.appendChild(renderPin(window.data.adverts[i]));
+  // }
+
+  // window.pin = {
+  //   pinList: pinList,
+  //   fragmentPin: fragmentPin
+  // };
 
 })();

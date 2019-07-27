@@ -85,8 +85,8 @@
 
   var onPopupCloseClick = function () {
     // скрываем все карточки
-    for (var i = 0; i < popupList.length; i++) {
-      popupList[i].style.display = 'none';
+    for (var i = 0; i < window.card.popupList.length; i++) {
+      window.card.popupList[i].style.display = 'none';
     }
     // if (evt.target.classList.contains('popup__close')) {
     //   this.style.display = 'none';
@@ -95,26 +95,52 @@
 
   var onWindowEscPress = function () {
     // скрываем все карточки
-    for (var i = 0; i < popupList.length; i++) {
-      popupList[i].style.display = 'none';
+    for (var i = 0; i < window.card.popupList.length; i++) {
+      window.card.popupList[i].style.display = 'none';
     }
   };
 
-  var fragmentCard = document.createDocumentFragment();
-  for (i = 0; i < window.data.adverts.length; i++) {
-    fragmentCard.appendChild(renderCard(window.data.adverts[i]));
-  }
+  // var fragmentCard = document.createDocumentFragment();
+  // for (i = 0; i < window.data.adverts.length; i++) {
+  //   fragmentCard.appendChild(renderCard(window.data.adverts[i]));
+  // }
 
-  // выводим все карточки на страницу
-  document.body.appendChild(fragmentCard);
+  // // выводим все карточки на страницу
+  // document.body.appendChild(fragmentCard);
 
-  // изначально все карточки скрыты
-  var popupList = document.querySelectorAll('.popup');
-  for (var i = 0; i < popupList.length; i++) {
-    popupList[i].style.display = 'none';
-  }
+  // // изначально все карточки скрыты
+  // var popupList = document.querySelectorAll('.popup');
+  // for (var i = 0; i < popupList.length; i++) {
+  //   popupList[i].style.display = 'none';
+  // }
 
-  window.card = {
-    popupList: popupList
-  };
+  // window.card = {
+  //   popupList: popupList
+  // };
+
+  var checkInterval = setInterval(function () {
+    if (window.data.adverts !== undefined) {
+      clearInterval(checkInterval);
+      // console.log(window.data.adverts);
+
+      var fragmentCard = document.createDocumentFragment();
+      for (i = 0; i < window.data.adverts.length; i++) {
+        fragmentCard.appendChild(renderCard(window.data.adverts[i]));
+      }
+
+      // выводим все карточки на страницу
+      document.body.appendChild(fragmentCard);
+
+      // изначально все карточки скрыты
+      var popupList = document.querySelectorAll('.popup');
+      for (var i = 0; i < popupList.length; i++) {
+        popupList[i].style.display = 'none';
+      }
+
+      window.card = {
+        popupList: popupList
+      };
+
+    }
+  }, 1000);
 })();
