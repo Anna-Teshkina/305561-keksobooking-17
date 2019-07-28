@@ -157,7 +157,7 @@
 
 
       var checkInterval = setInterval(function () {
-        if (window.data.adverts !== undefined) {
+        if (window.data !== undefined) {
           clearInterval(checkInterval);
           window.pin.pinList.appendChild(window.data.fragmentPin); // выводим метки на страницу
         }

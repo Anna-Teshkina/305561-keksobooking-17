@@ -24,13 +24,9 @@
 
     /* ------------------------------------------------------- */
     pinElement.addEventListener('click', function () {
-      // скрываем все открытые карточки
       for (var i = 0; i < window.data.popupList.length; i++) {
-        window.data.popupList[i].style.display = 'none';
-      }
-
-      // открываем только нужную карточку
-      for (i = 0; i < window.data.popupList.length; i++) {
+        window.data.popupList[i].style.display = 'none'; // скрываем все открытые карточки
+        // открываем только нужную карточку
         if (window.data.popupList[i].getAttribute('data-id') === pinElement.getAttribute('data-id')) {
           window.data.popupList[i].style.display = 'block';
         }
