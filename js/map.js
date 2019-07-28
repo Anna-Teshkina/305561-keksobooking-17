@@ -3,10 +3,16 @@
 // модуль, который отвечает за перемещение метки по карте,
 // установку координат метки в поле адреса
 (function () {
+  // ограничение по оси Y
   var MIN_Y = 130;
   var MAX_Y = 630;
+
+  // ограничение по оси X
   var MIN_X = 0;
   var MAX_X = 1135;
+
+  var PEAK_HEIGHT = 22; // высота пика
+  var map = document.querySelector('.map'); // блок карты
 
   // При первом открытии, страница находится в неактивном состоянии:
   // блок с картой находится в неактивном состоянии, форма подачи заявления заблокирована.
@@ -36,7 +42,7 @@
     mapFiltersSelect[i].setAttribute('disabled', 'disabled');
   }
 
-  var pinMain = window.data.map.querySelector('.map__pin--main');
+  var pinMain = map.querySelector('.map__pin--main');
   var widthPinMain = pinMain.offsetWidth; // ширина метки
   var radiusPinMain = widthPinMain / 2; // радиус метки
 
@@ -60,7 +66,7 @@
 
     var startPinCoords = {
       x: leftPinMain + radiusPinMain,
-      y: topPinMain + widthPinMain + window.data.PEAK_HEIGHT
+      y: topPinMain + widthPinMain + PEAK_HEIGHT
     };
 
     var dragged = false; // флаг (true - перемещение было, false - перемещения не было)
@@ -95,6 +101,21 @@
         pinMain.style.left = (pinMain.offsetLeft - shift.x) + 'px';
       }
 
+      // по условию движение метки ограничено по оси Y от 130 до 630
+      // т.к. речь идет именно о положении острого конца пина, то
+      // верхняя координата равна 130 - высота пина;
+      // высота пина равна высоте пика + диаметр метки (=ширин метки)
+      // if (pinMain.offsetTop - shift.y < MIN_Y - PEAK_HEIGHT - widthPinMain) {
+      //   topPinMain = MIN_Y - PEAK_HEIGHT - widthPinMain;
+      //   pinMain.style.top = MIN_Y - PEAK_HEIGHT - widthPinMain;
+      // } else if (pinMain.offsetTop - shift.y > MAX_Y) {
+      //   topPinMain = MAX_Y;
+      //   pinMain.style.top = MAX_Y;
+      // } else {
+      //   topPinMain = pinMain.offsetTop;
+      //   pinMain.style.top = (pinMain.offsetTop - shift.y) + 'px';
+      // }
+
       if (pinMain.offsetTop - shift.y < MIN_Y) {
         topPinMain = MIN_Y;
         pinMain.style.top = MIN_Y;
@@ -108,7 +129,7 @@
 
       startPinCoords = {
         x: leftPinMain + radiusPinMain,
-        y: topPinMain + widthPinMain + window.data.PEAK_HEIGHT
+        y: topPinMain + widthPinMain + PEAK_HEIGHT
       };
 
       // поле адреса должно быть заполнено, исходное значение поля адреса - острый конец метки
@@ -117,7 +138,7 @@
 
     var onMouseUp = function () {
       // переводим карту в активное состояние
-      window.data.map.classList.remove('map--faded');
+      map.classList.remove('map--faded');
 
       // переводим форму и поля формы в активное состояние
       window.form.formAd.classList.remove('ad-form--disabled');
@@ -134,13 +155,19 @@
       removeDisabledAttribute(formBtns);
       removeDisabledAttribute(formTextarea);
 
-      // выводим метки на страницу
-      window.pin.pinList.appendChild(window.pin.fragmentPin);
+
+      var checkInterval = setInterval(function () {
+        if (window.data !== undefined) {
+          clearInterval(checkInterval);
+          window.pin.pinList.appendChild(window.data.fragmentPin); // выводим метки на страницу
+        }
+      }, 100);
+
 
       if (!dragged) {
         startPinCoords = {
           x: leftPinMain + radiusPinMain,
-          y: topPinMain + widthPinMain + window.data.PEAK_HEIGHT
+          y: topPinMain + widthPinMain + PEAK_HEIGHT
         };
 
         // поле адреса должно быть заполнено, исходное значение поля адреса - острый конец метки

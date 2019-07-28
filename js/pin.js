@@ -24,15 +24,11 @@
 
     /* ------------------------------------------------------- */
     pinElement.addEventListener('click', function () {
-      // скрываем все открытые карточки
-      for (var i = 0; i < window.card.popupList.length; i++) {
-        window.card.popupList[i].style.display = 'none';
-      }
-
-      // открываем только нужную карточку
-      for (i = 0; i < window.card.popupList.length; i++) {
-        if (window.card.popupList[i].getAttribute('data-id') === pinElement.getAttribute('data-id')) {
-          window.card.popupList[i].style.display = 'block';
+      for (var i = 0; i < window.data.popupList.length; i++) {
+        window.data.popupList[i].style.display = 'none'; // скрываем все открытые карточки
+        // открываем только нужную карточку
+        if (window.data.popupList[i].getAttribute('data-id') === pinElement.getAttribute('data-id')) {
+          window.data.popupList[i].style.display = 'block';
         }
       }
     });
@@ -40,14 +36,8 @@
     return pinElement;
   };
 
-  var fragmentPin = document.createDocumentFragment();
-  for (var i = 0; i < window.data.adverts.length; i++) {
-    fragmentPin.appendChild(renderPin(window.data.adverts[i]));
-  }
-
   window.pin = {
-    pinList: pinList,
-    fragmentPin: fragmentPin
+    renderPin: renderPin,
+    pinList: pinList
   };
-
 })();
