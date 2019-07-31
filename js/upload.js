@@ -19,8 +19,8 @@
   fileChooser.addEventListener('change', function () {
     var file = fileChooser.files[0];
     var fileName = file.name;
-    var check = checkType(fileName);
-    if (check) {
+
+    if (checkType(fileName)) {
       var reader = new FileReader();
       reader.addEventListener('load', function () {
         preview.src = reader.result;
@@ -38,8 +38,8 @@
   photoChooser.addEventListener('change', function () {
     var file = photoChooser.files[0];
     var fileName = file.name;
-    var check = checkType(fileName);
-    if (check) {
+
+    if (checkType(fileName)) {
       var reader = new FileReader();
       reader.addEventListener('load', function () {
         var img = document.createElement('img');
