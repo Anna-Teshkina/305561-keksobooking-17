@@ -6,17 +6,19 @@
     var serverData = data;
     // console.log(data);
     var adverts = []; // массив объявлений
+    var ADVERTS_COUNT = 5;
 
     for (var i = 0; i < serverData.length; i++) {
       var advertItem = serverData[i];
       advertItem.id = i;
       adverts.push(advertItem);
     }
+
     // console.log(adverts);
-
-
+    // console.log(filterType);
+    // -------------------------------------------------------------------------------------------------
     var fragmentCard = document.createDocumentFragment(); // генерируем фрагмент с карточками объявлений
-    for (i = 0; i < adverts.length; i++) {
+    for (i = 0; i < ADVERTS_COUNT; i++) {
       fragmentCard.appendChild(window.card.renderCard(adverts[i]));
     }
     document.body.appendChild(fragmentCard); // выводим все карточки на страницу
@@ -24,12 +26,43 @@
     for (i = 0; i < popupList.length; i++) { // изначально все карточки скрыты
       popupList[i].style.display = 'none';
     }
-    // ---------------------------------------------------------------------------------
-    var fragmentPin = document.createDocumentFragment(); // генерируем фрагмент с пинами
-    for (i = 0; i < adverts.length; i++) {
-      fragmentPin.appendChild(window.pin.renderPin(adverts[i]));
-    }
+    // -------------------------------------------------------------------------------------------------
 
+    var fragmentPin = window.util.generatePins(adverts, ADVERTS_COUNT);
+
+    var filterType = document.querySelector('#housing-type'); // фильтр по типу жилья
+
+    filterType.addEventListener('change', function () {
+      var filterTypeValue = filterType.value;
+
+      // var filterAdverts = adverts.filter(function (it) {
+      //   if (filterTypeValue !== 'any') {
+      //     return it.offer.type === filterTypeValue;
+      //   } else {
+      //     return it.offer.type;
+      //   }
+      // });
+
+      var filterAdverts = adverts;
+      if (filterTypeValue !== 'any') {
+        filterAdverts = adverts.filter(function (it) {
+          return it.offer.type === filterTypeValue;
+        });
+      }
+
+      // удалим все текущие пины со страницы
+      window.util.deletePins();
+
+      // проверим кол-во найденных элементов больше пяти?
+      var filterNumber = filterAdverts.length;
+      if (filterAdverts.length > ADVERTS_COUNT) {
+        filterNumber = ADVERTS_COUNT;
+      }
+      var fragmentFiltered = window.util.generatePins(filterAdverts, filterNumber);
+
+
+      window.pin.pinList.appendChild(fragmentFiltered); // выводим метки на страницу
+    });
 
     window.data = {
       adverts: adverts,
