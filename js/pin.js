@@ -21,8 +21,7 @@
     // pinImg.alt = advert.offer.type;
     pinList.appendChild(pinElement);
 
-
-    /* ------------------------------------------------------- */
+    // при клике на пин появляется карточка соответствующего объявления
     pinElement.addEventListener('click', function () {
       for (var i = 0; i < window.data.popupList.length; i++) {
         window.data.popupList[i].style.display = 'none'; // скрываем все открытые карточки
@@ -32,7 +31,7 @@
         }
       }
     });
-    /* ------------------------------------------------------- */
+
     return pinElement;
   };
 

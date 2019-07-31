@@ -90,6 +90,7 @@
     return cardElement;
   };
 
+  // при нажатии на крестик и esc карточка закрывается
   var onPopupCloseClick = function () {
     // скрываем все карточки
     for (var i = 0; i < window.data.popupList.length; i++) {
