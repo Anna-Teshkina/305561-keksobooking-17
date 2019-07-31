@@ -34,22 +34,32 @@
 
     filterType.addEventListener('change', function () {
       var filterTypeValue = filterType.value;
-      var filterAdverts = adverts.filter(function (it) {
-        if (filterTypeValue !== 'any') {
+
+      // var filterAdverts = adverts.filter(function (it) {
+      //   if (filterTypeValue !== 'any') {
+      //     return it.offer.type === filterTypeValue;
+      //   } else {
+      //     return it.offer.type;
+      //   }
+      // });
+
+      var filterAdverts = adverts;
+      if (filterTypeValue !== 'any') {
+        filterAdverts = adverts.filter(function (it) {
           return it.offer.type === filterTypeValue;
-        } else {
-          return it.offer.type;
-        }
-      });
+        });
+      }
 
       // удалим все текущие пины со страницы
       window.util.deletePins();
 
       // проверим кол-во найденных элементов больше пяти?
-      var fragmentFiltered = window.util.generatePins(filterAdverts, filterAdverts.length);
-      if (filterAdverts.length > 5) {
-        fragmentFiltered = window.util.generatePins(filterAdverts, ADVERTS_COUNT);
+      var filterNumber = filterAdverts.length;
+      if (filterAdverts.length > ADVERTS_COUNT) {
+        filterNumber = ADVERTS_COUNT;
       }
+      var fragmentFiltered = window.util.generatePins(filterAdverts, filterNumber);
+
 
       window.pin.pinList.appendChild(fragmentFiltered); // выводим метки на страницу
     });

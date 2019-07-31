@@ -9,14 +9,18 @@
   var fileChooser = document.querySelector('.ad-form-header__input');
   var preview = document.querySelector('.ad-form-header__preview img');
 
+  var checkType = function (name) {
+    var matches = FILE_TYPES.some(function (it) {
+      return name.endsWith(it);
+    });
+    return matches;
+  };
+
   fileChooser.addEventListener('change', function () {
     var file = fileChooser.files[0];
     var fileName = file.name;
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
-
-    if (matches) {
+    var check = checkType(fileName);
+    if (check) {
       var reader = new FileReader();
       reader.addEventListener('load', function () {
         preview.src = reader.result;
@@ -34,12 +38,8 @@
   photoChooser.addEventListener('change', function () {
     var file = photoChooser.files[0];
     var fileName = file.name;
-
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
-
-    if (matches) {
+    var check = checkType(fileName);
+    if (check) {
       var reader = new FileReader();
       reader.addEventListener('load', function () {
         var img = document.createElement('img');
