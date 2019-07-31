@@ -53,6 +53,20 @@
     changeTime(selectTimeOut, selectTimeIn);
   });
 
+  // сброс всех полей
+  var formReset = formAd.querySelector('.ad-form__reset');
+  formReset.addEventListener('click', function () {
+    formAd.reset(); // сбрасываем все поля формы
+
+    window.upload.preview.src = 'img/muffin-grey.svg'; // сброс аватара пользователя
+
+    // сброс загруженных изображений
+    var uploadPhoto = formAd.querySelectorAll('img.ad-form__photo');
+    for (var i = 0; i < uploadPhoto.length; i++) {
+      window.upload.photoContainer.removeChild(uploadPhoto[i]);
+    }
+  });
+
   window.form = {
     formAd: formAd
   };

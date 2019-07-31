@@ -38,9 +38,10 @@
   // элементы управления формы с фильтрами .map__filters заблокирована так же, как и форма .ad-form;
   var mapFilters = document.querySelector('.map__filters');
   var mapFiltersSelect = mapFilters.querySelectorAll('select');
-  for (var i = 0; i < mapFiltersSelect.length; i++) {
-    mapFiltersSelect[i].setAttribute('disabled', 'disabled');
-  }
+  setDisabledAttribute(mapFiltersSelect);
+  // for (var i = 0; i < mapFiltersSelect.length; i++) {
+  //   mapFiltersSelect[i].setAttribute('disabled', 'disabled');
+  // }
 
   var pinMain = map.querySelector('.map__pin--main');
   var widthPinMain = pinMain.offsetWidth; // ширина метки
@@ -143,9 +144,9 @@
       // переводим форму и поля формы в активное состояние
       window.form.formAd.classList.remove('ad-form--disabled');
 
-      // в активном состоянии элементы управления формы (input, select и т.д.) должны быть активны
+      // в активном состоянии элементы управления формы и фильра (input, select и т.д.) должны быть активны
       var removeDisabledAttribute = function (array) {
-        for (i = 0; i < array.length; i++) {
+        for (var i = 0; i < array.length; i++) {
           array[i].removeAttribute('disabled', 'disabled');
         }
       };
@@ -154,6 +155,7 @@
       removeDisabledAttribute(formSelect);
       removeDisabledAttribute(formBtns);
       removeDisabledAttribute(formTextarea);
+      removeDisabledAttribute(mapFiltersSelect);
 
 
       var checkInterval = setInterval(function () {
