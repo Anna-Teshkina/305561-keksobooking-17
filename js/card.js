@@ -7,6 +7,13 @@
     .content
     .querySelector('.map__card');
 
+  var typesMap = {
+    'flat': 'Квартира',
+    'house': 'Дом',
+    'bungalo': 'Бунгало',
+    'palace': 'Дворец'
+  };
+
   var renderCard = function (advert) {
     var cardElement = cardTemplate.cloneNode(true);
     cardElement.dataset.id = advert.id;
@@ -26,9 +33,9 @@
     cardTitle.textContent = advert.offer.title;
     cardAddress.textContent = advert.offer.address;
     cardPrice.innerHTML = advert.offer.price + '&#x20bd;<span>/ночь</span>';
-    cardType.textContent = advert.offer.type;
+    cardType.textContent = typesMap[advert.offer.type];
     cardCapacity.textContent = advert.offer.rooms + ' ' + window.util.declOfNum(advert.offer.rooms, ['комната', 'комнаты', 'комнат']) + ' для ' + advert.offer.guests + ' ' + window.util.declOfNum(advert.offer.guests, ['гостя', 'гостей', 'гостей']);
-    cardTime.textContent = 'Заезд после' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
+    cardTime.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
 
     /* ----------------------------------------------------------- */
     // вот это надо наверное вынести в функцию
