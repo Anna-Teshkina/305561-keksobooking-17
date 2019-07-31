@@ -11,14 +11,14 @@
     var cardElement = cardTemplate.cloneNode(true);
     cardElement.dataset.id = advert.id;
 
-    var cardImg = cardElement.querySelector('.popup__avatar');
-    var cardTitle = cardElement.querySelector('.popup__title');
-    var cardAddress = cardElement.querySelector('.popup__text--address');
-    var cardPrice = cardElement.querySelector('.popup__text--price');
-    var cardType = cardElement.querySelector('.popup__type');
-    var cardCapacity = cardElement.querySelector('.popup__text--capacity');
-    var cardTime = cardElement.querySelector('.popup__text--time');
-    var cardFeatures = cardElement.querySelector('.popup__features');
+    var cardImg = cardElement.querySelector('.popup__avatar'); // аватар пользователя
+    var cardTitle = cardElement.querySelector('.popup__title'); // заголовок объявления
+    var cardAddress = cardElement.querySelector('.popup__text--address'); // адрес
+    var cardPrice = cardElement.querySelector('.popup__text--price'); // цена
+    var cardType = cardElement.querySelector('.popup__type'); // тип жилья
+    var cardCapacity = cardElement.querySelector('.popup__text--capacity'); // количество гостей и комнат
+    var cardTime = cardElement.querySelector('.popup__text--time'); // время заезда и выезда
+    var cardFeatures = cardElement.querySelector('.popup__features'); // доступные удобства
     var cardPhotos = cardElement.querySelector('.popup__photos'); //  блок со списком фотографий
 
     cardImg.src = advert.author.avatar;
