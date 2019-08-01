@@ -67,6 +67,75 @@
     }
   });
 
+  /* --------------------------------------------------------------- */
+  // вводим объекты: guestsToRooms, roomsToGuests - соответствие между value комнат и value кол-ва гостей
+  // в объектах для каждого value перечисляем доступные варианты
+  var guestsToRooms = {
+    '1': [1, 2, 3],
+    '2': [2, 3],
+    '3': [3],
+    '0': [100]
+  };
+
+  var roomsToGuests = {
+    '1': [1],
+    '2': [1, 2],
+    '3': [1, 2, 3],
+    '100': [0]
+  };
+
+  var selectRooms = formAd.querySelector('#room_number'); // селектор с выбором кол-ва комнат
+  var selectGuests = formAd.querySelector('#capacity'); // селектор с выбором кол-ва гостей
+  var flag = false;
+
+  // я изменила разметку и в изначальном варианте поставила 100 комнат/ не для гостей,
+  // это валидный вариант, поэтому устанавливаем для комнат и гостей начальное сообщние = "",
+  // т.е. проходит валидацию
+  selectRooms.setCustomValidity('');
+  selectGuests.setCustomValidity('');
+
+  selectRooms.addEventListener('change', function () {
+    var selectedRoomsValue = selectRooms.value; // value выбранной комнаты
+    var availableGuests = roomsToGuests[selectedRoomsValue]; // смотрим для данного value какое кол-во гостей нам подходит
+    var guestsOptionArray = selectGuests.querySelectorAll('option'); // список вариантов выбора гостей
+
+    // изначально ставим флаг - false, т.е. кол-во гостей не соответствует кол-ву комнат, устанавливаем сообщение об ошибке
+    // затем если проверка выполнится, меняем флаг на true, удаляем сообщение об ошибке
+    selectRooms.setCustomValidity('Количество комнат не может быть меньше кол-ва гостей. \n Вариант 100 комнат предназначен не для гостей.');
+
+    for (var i = 0; i < guestsOptionArray.length; i++) {
+      if ((guestsOptionArray[i].selected === true) && (availableGuests.indexOf(parseInt(guestsOptionArray[i].value, 10)) !== -1)) {
+        flag = true;
+      }
+    }
+
+    if (flag) {
+      selectRooms.setCustomValidity('');
+      selectGuests.setCustomValidity('');
+    }
+  });
+
+  selectGuests.addEventListener('change', function () {
+    var selectedGuestsValue = selectGuests.value; // value выбранного кол-ва гостей
+    var availableRooms = guestsToRooms[selectedGuestsValue]; // смотрим для данного value какие варианты комнат нам подходит
+    var roomsOptionArray = selectRooms.querySelectorAll('option'); // список вариантов комнат
+
+    // изначально ставим флаг - false, т.е. кол-во гостей не соответствует кол-ву комнат, устанавливаем сообщение об ошибке
+    // затем если проверка выполнится, меняем флаг на true, удаляем сообщение об ошибке
+    selectGuests.setCustomValidity('Количество гостей не может быть больше кол-ва комнат. \n Вариант 100 комнат предназначен не для гостей.');
+
+    for (var i = 0; i < roomsOptionArray.length; i++) {
+      if ((roomsOptionArray[i].selected === true) && (availableRooms.indexOf(parseInt(roomsOptionArray[i].value, 10)) !== -1)) {
+        flag = true;
+      }
+    }
+
+    if (flag) {
+      selectRooms.setCustomValidity('');
+      selectGuests.setCustomValidity('');
+    }
+  });
+
   window.form = {
     formAd: formAd
   };
