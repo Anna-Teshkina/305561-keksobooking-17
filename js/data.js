@@ -2,6 +2,7 @@
 
 // модуль, который формирует массив данных - метки объявлений
 (function () {
+  var LOAD_URL = 'https://js.dump.academy/keksobooking/data';
   var onSuccess = function (data) {
     var serverData = data;
     // console.log(data);
@@ -15,12 +16,12 @@
     }
 
     // console.log(adverts);
-    // console.log(filterType);
     // -------------------------------------------------------------------------------------------------
     var fragmentCard = document.createDocumentFragment(); // генерируем фрагмент с карточками объявлений
     for (i = 0; i < ADVERTS_COUNT; i++) {
       fragmentCard.appendChild(window.card.renderCard(adverts[i]));
     }
+
     document.body.appendChild(fragmentCard); // выводим все карточки на страницу
     var popupList = document.querySelectorAll('.popup');
     for (i = 0; i < popupList.length; i++) { // изначально все карточки скрыты
@@ -28,20 +29,10 @@
     }
     // -------------------------------------------------------------------------------------------------
 
-    var fragmentPin = window.util.generatePins(adverts, ADVERTS_COUNT);
-
     var filterType = document.querySelector('#housing-type'); // фильтр по типу жилья
 
     filterType.addEventListener('change', function () {
       var filterTypeValue = filterType.value;
-
-      // var filterAdverts = adverts.filter(function (it) {
-      //   if (filterTypeValue !== 'any') {
-      //     return it.offer.type === filterTypeValue;
-      //   } else {
-      //     return it.offer.type;
-      //   }
-      // });
 
       var filterAdverts = adverts;
       if (filterTypeValue !== 'any') {
@@ -60,21 +51,17 @@
       }
       var fragmentFiltered = window.util.generatePins(filterAdverts, filterNumber);
 
-
       window.pin.pinList.appendChild(fragmentFiltered); // выводим метки на страницу
     });
 
     window.data = {
       adverts: adverts,
       popupList: popupList,
-      fragmentPin: fragmentPin
+      ADVERTS_COUNT: ADVERTS_COUNT
     };
   };
 
   var onError = function () {
-    // console.error(message);
-    // console.log("Ошибка");
-
     var errorTemplate = document.querySelector('#error')
     .content
     .querySelector('.error');
@@ -84,10 +71,10 @@
     document.body.appendChild(errorElement);
 
     errorElement.addEventListener('click', function () {
-      errorElement.style.display = 'none';
-      window.load('https://js.dump.academy/keksobooking/data', onSuccess, onError);
+      document.body.removeChild(errorElement);
+      window.load(LOAD_URL, onSuccess, onError);
     });
   };
 
-  window.load('https://js.dump.academy/keksobooking/data', onSuccess, onError);
+  window.load(LOAD_URL, onSuccess, window.onError);
 })();
