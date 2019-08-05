@@ -72,12 +72,12 @@
   var setCustomValidationMessage = function () {
     var customMessage = ''; // сообщение об ошибке
     var rooms = parseInt(selectRooms.value, 10); // кол-во комнат
-    var quests = parseInt(selectGuests.value, 10); // кол-во гостей
-    if ((rooms < quests) && (rooms !== 100) && (quests !== 0)) {
+    var guests = parseInt(selectGuests.value, 10); // кол-во гостей
+    if ((rooms < guests) && (rooms !== 100) && (guests !== 0)) {
       customMessage = 'Кол-во комнат не может быть меньше кол-ва гостей';
-    } else if ((rooms === 100) && (quests !== 0)) {
+    } else if ((rooms === 100) && (guests !== 0)) {
       customMessage = 'Выберите вариант: не для гостей.';
-    } else if ((rooms !== 100) && (quests === 0)) {
+    } else if ((rooms !== 100) && (guests === 0)) {
       customMessage = 'Не для гостей доступен только вариант 100 комнат.';
     }
     // console.log(customMessage);
