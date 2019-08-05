@@ -34,11 +34,26 @@
       return fragment;
     },
 
+    // удаление пинов со страницы
     deletePins: function () {
       var pins = window.pin.pinList.querySelectorAll('.map__pin');
       for (var i = 1; i < pins.length; i++) {
         window.pin.pinList.removeChild(pins[i]);
       }
-    }
+    },
+
+    // устанавливает атрибут disabled (для полей формы)
+    setDisabledAttribute: function (array) {
+      for (var i = 0; i < array.length; i++) {
+        array[i].disabled = true;
+      }
+    },
+
+    // удаляет атрибут disabled (для полей формы)
+    removeDisabledAttribute: function (array) {
+      for (var i = 0; i < array.length; i++) {
+        array[i].disabled = false;
+      }
+    },
   };
 })();

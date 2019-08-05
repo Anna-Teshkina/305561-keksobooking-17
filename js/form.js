@@ -54,17 +54,12 @@
   });
 
   // сброс всех полей
-  var formReset = formAd.querySelector('.ad-form__reset');
-  formReset.addEventListener('click', function () {
-    formAd.reset(); // сбрасываем все поля формы
-
-    window.upload.preview.src = 'img/muffin-grey.svg'; // сброс аватара пользователя
-
-    // сброс загруженных изображений
-    var uploadPhoto = formAd.querySelectorAll('img.ad-form__photo');
-    for (var i = 0; i < uploadPhoto.length; i++) {
-      window.upload.photoContainer.removeChild(uploadPhoto[i]);
-    }
+  var resetBtn = formAd.querySelector('.ad-form__reset');
+  resetBtn.addEventListener('click', function () {
+    window.isFormSend = true;
+    window.map.setInactiveStatus();
+    // resetForm();
+    // window.map.setInactiveAddress(window.map.xPinMain, window.map.yPinMain);
   });
 
   /* --------------------------------------------------------------- */
@@ -76,11 +71,13 @@
 
   var setCustomValidationMessage = function () {
     var customMessage = ''; // сообщение об ошибке
-    if ((parseInt(selectRooms.value, 10) < parseInt(selectGuests.value, 10)) && (parseInt(selectRooms.value, 10) !== 100) && (parseInt(selectGuests.value, 10) !== 0)) {
+    var rooms = parseInt(selectRooms.value, 10); // кол-во комнат
+    var guests = parseInt(selectGuests.value, 10); // кол-во гостей
+    if ((rooms < guests) && (rooms !== 100) && (guests !== 0)) {
       customMessage = 'Кол-во комнат не может быть меньше кол-ва гостей';
-    } else if ((parseInt(selectRooms.value, 10) === 100) && (parseInt(selectGuests.value, 10) !== 0)) {
+    } else if ((rooms === 100) && (guests !== 0)) {
       customMessage = 'Выберите вариант: не для гостей.';
-    } else if ((parseInt(selectRooms.value, 10) !== 100) && (parseInt(selectGuests.value, 10) === 0)) {
+    } else if ((rooms !== 100) && (guests === 0)) {
       customMessage = 'Не для гостей доступен только вариант 100 комнат.';
     }
     // console.log(customMessage);
@@ -89,8 +86,48 @@
 
   selectRooms.addEventListener('change', setCustomValidationMessage);
   selectGuests.addEventListener('change', setCustomValidationMessage);
+  /* --------------------------------------------------------------- */
+  var showSuccessMessage = function () {
+    var successTemplate = document.querySelector('#success')
+    .content
+    .querySelector('.success');
+
+    var successElement = successTemplate.cloneNode(true);
+    document.body.appendChild(successElement);
+
+    successElement.addEventListener('click', function () {
+      document.body.removeChild(successElement);
+    });
+  };
+
+  var onSendSuccess = function () {
+    // console.log('Форма успешно отправлена');
+    window.isFormSend = true;
+    window.map.setInactiveStatus();
+    showSuccessMessage();
+  };
+
+  var onSendError = function () {
+    var errorTemplate = document.querySelector('#error')
+    .content
+    .querySelector('.error');
+
+    var errorElement = errorTemplate.cloneNode(true);
+    document.body.appendChild(errorElement);
+
+    errorElement.addEventListener('click', function () {
+      document.body.removeChild(errorElement);
+      window.send(new FormData(formAd), onSendSuccess, onSendError);
+    });
+  };
+
+  // отправка данных на сервер
+  formAd.addEventListener('submit', function (evt) {
+    window.send(new FormData(formAd), onSendSuccess, onSendError);
+    evt.preventDefault();
+  });
 
   window.form = {
-    formAd: formAd
+    formAd: formAd,
   };
 })();

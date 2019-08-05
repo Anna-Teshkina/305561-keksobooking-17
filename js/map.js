@@ -11,51 +11,78 @@
   var MIN_X = 0;
   var MAX_X = 1135;
 
+  var PIN_START_X = 570; // начальная координата пина x
+  var PIN_START_Y = 375; // начальная координта пина y
+
   var PEAK_HEIGHT = 22; // высота пика
   var map = document.querySelector('.map'); // блок карты
+  var mapFilters = document.querySelector('.map__filters'); // блок фильтра
 
-  // При первом открытии, страница находится в неактивном состоянии:
-  // блок с картой находится в неактивном состоянии, форма подачи заявления заблокирована.
-  // элементы управления формы (input, select и т.д.) должны быть неактивны в исходном состоянии
+  var formElements = window.form.formAd.querySelectorAll('fieldset'); // поля формы
+  var filterElements = mapFilters.querySelectorAll('fieldset, select'); // поля фильтра
 
-  var formInput = window.form.formAd.querySelectorAll('input');
-  var formSelect = window.form.formAd.querySelectorAll('select');
-  var formBtns = window.form.formAd.querySelectorAll('button');
-  var formTextarea = window.form.formAd.querySelector('textarea');
+  var pinMain = map.querySelector('.map__pin--main'); // метка
 
-  // в исходном состоянии устанавливаем для элементов формы атрибут disabled
-  var setDisabledAttribute = function (array) {
-    for (var i = 0; i < array.length; i++) {
-      array[i].setAttribute('disabled', 'disabled');
-    }
+  // устанавливает пин в исходное положение
+  var setMainPin = function () {
+    pinMain.style.top = PIN_START_Y + 'px';
+    pinMain.style.left = PIN_START_X + 'px';
   };
 
-  setDisabledAttribute(formInput);
-  setDisabledAttribute(formSelect);
-  setDisabledAttribute(formBtns);
-  setDisabledAttribute(formTextarea);
-
-  // элементы управления формы с фильтрами .map__filters заблокирована так же, как и форма .ad-form;
-  var mapFilters = document.querySelector('.map__filters');
-  var mapFiltersSelect = mapFilters.querySelectorAll('select');
-  setDisabledAttribute(mapFiltersSelect);
-  // for (var i = 0; i < mapFiltersSelect.length; i++) {
-  //   mapFiltersSelect[i].setAttribute('disabled', 'disabled');
-  // }
-
-  var pinMain = map.querySelector('.map__pin--main');
   var widthPinMain = pinMain.offsetWidth; // ширина метки
   var radiusPinMain = widthPinMain / 2; // радиус метки
 
-  var leftPinMain = pinMain.offsetLeft; // расстояние от метки до левого края карты
-  var topPinMain = pinMain.offsetTop; // расстояние от метки до верха карты
+  var leftPinMain = PIN_START_X; // расстояние от метки до левого края карты
+  var topPinMain = PIN_START_Y; // расстояние от метки до верха карты
 
   var xPinMain = leftPinMain + radiusPinMain; // начальная координата метки до смещения (ось абсцисс)
   var yPinMain = topPinMain + radiusPinMain; // начальная координата метки до смещения (ось ординат)
 
-  // поле адреса должно быть заполнено, исходное значение поля адреса - середина метки
-  var inputAddress = window.form.formAd.querySelector('#address');
-  inputAddress.setAttribute('value', xPinMain + ', ' + yPinMain);
+  var inputAddress = window.form.formAd.querySelector('#address'); // поле адреса
+  window.isFormSend = false;
+
+  var setInactiveAddress = function (x, y) {
+    inputAddress.setAttribute('value', x + ', ' + y);
+  };
+
+  var resetForm = function () {
+    window.form.formAd.reset(); // сбрасываем все поля формы
+    window.upload.preview.src = 'img/muffin-grey.svg'; // сброс аватара пользователя
+
+    // сброс загруженных изображений
+    var uploadPhoto = window.form.formAd.querySelectorAll('img.ad-form__photo');
+    for (var i = 0; i < uploadPhoto.length; i++) {
+      window.upload.photoContainer.removeChild(uploadPhoto[i]);
+    }
+  };
+
+  var setInactiveStatus = function () {
+    // В неактивном состоянии:
+    // блок с картой находится в неактивном состоянии, форма подачи заявления заблокирована.
+    // элементы управления формы (input, select и т.д.) и фильтра должны быть неактивны в исходном состоянии
+
+    // если деактивация вызвана отправкой формы
+    if (window.isFormSend) {
+      map.classList.add('map--faded'); // переводим карту в неактивное состояние
+      window.form.formAd.classList.add('ad-form--disabled'); // переводим форму в неактивное состояние
+    }
+
+    // вернем пин в исходное состояние
+    setMainPin();
+
+    // удалим все текущие пины со страницы
+    window.util.deletePins();
+
+    // элементы управления формы (input, select и т.д.) и фильтра должны быть неактивны в исходном состоянии
+    window.util.setDisabledAttribute(formElements);
+    window.util.setDisabledAttribute(filterElements);
+
+    setInactiveAddress(xPinMain, yPinMain);
+
+    resetForm();
+  };
+
+  setInactiveStatus();
 
   pinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -91,6 +118,7 @@
       // ограничение для левой координаты: 0px и (1200 - 65) = 1135px
       // расчет координат указан с учетом ширины макера (пункт 4.5 ТЗ)
 
+
       if (pinMain.offsetLeft - shift.x < MIN_X) {
         leftPinMain = MIN_X;
         pinMain.style.left = MIN_X;
@@ -117,6 +145,7 @@
       //   pinMain.style.top = (pinMain.offsetTop - shift.y) + 'px';
       // }
 
+      // по условию движение метки ограничено по оси Y от 130 до 630
       if (pinMain.offsetTop - shift.y < MIN_Y) {
         topPinMain = MIN_Y;
         pinMain.style.top = MIN_Y;
@@ -138,33 +167,21 @@
     };
 
     var onMouseUp = function () {
-      // переводим карту в активное состояние
-      map.classList.remove('map--faded');
+      map.classList.remove('map--faded'); // переводим карту в активное состояние
+      window.form.formAd.classList.remove('ad-form--disabled'); // переводим форму в активное состояние
 
-      // переводим форму и поля формы в активное состояние
-      window.form.formAd.classList.remove('ad-form--disabled');
-
-      // в активном состоянии элементы управления формы и фильра (input, select и т.д.) должны быть активны
-      var removeDisabledAttribute = function (array) {
-        for (var i = 0; i < array.length; i++) {
-          array[i].removeAttribute('disabled', 'disabled');
-        }
-      };
-
-      removeDisabledAttribute(formInput);
-      removeDisabledAttribute(formSelect);
-      removeDisabledAttribute(formBtns);
-      removeDisabledAttribute(formTextarea);
-      removeDisabledAttribute(mapFiltersSelect);
+      // в активном состоянии элементы управления формы и фильтра (input, select и т.д.) должны быть активны
+      window.util.removeDisabledAttribute(formElements);
+      window.util.removeDisabledAttribute(filterElements);
 
 
       var checkInterval = setInterval(function () {
         if (window.data !== undefined) {
           clearInterval(checkInterval);
-          window.pin.pinList.appendChild(window.data.fragmentPin); // выводим метки на страницу
+          var fragmentPin = window.util.generatePins(window.data.adverts, window.data.ADVERTS_COUNT); // генерируем фрагмент с пинами
+          window.pin.pinList.appendChild(fragmentPin); // выводим метки на страницу
         }
       }, 100);
-
 
       if (!dragged) {
         startPinCoords = {
@@ -183,4 +200,12 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  window.map = {
+    map: map,
+    setInactiveStatus: setInactiveStatus,
+    setInactiveAddress: setInactiveAddress,
+    xPinMain: xPinMain,
+    yPinMain: yPinMain
+  };
 })();
