@@ -129,21 +129,6 @@
       }
 
       // по условию движение метки ограничено по оси Y от 130 до 630
-      // т.к. речь идет именно о положении острого конца пина, то
-      // верхняя координата равна 130 - высота пина;
-      // высота пина равна высоте пика + диаметр метки (=ширин метки)
-      // if (pinMain.offsetTop - shift.y < MIN_Y - PEAK_HEIGHT - widthPinMain) {
-      // topPinMain = MIN_Y - PEAK_HEIGHT - widthPinMain;
-      // pinMain.style.top = MIN_Y - PEAK_HEIGHT - widthPinMain;
-      // } else if (pinMain.offsetTop - shift.y > MAX_Y) {
-      // topPinMain = MAX_Y;
-      // pinMain.style.top = MAX_Y;
-      // } else {
-      // topPinMain = pinMain.offsetTop;
-      // pinMain.style.top = (pinMain.offsetTop - shift.y) + 'px';
-      // }
-
-      // по условию движение метки ограничено по оси Y от 130 до 630
       if (pinMain.offsetTop - shift.y < MIN_Y) {
         topPinMain = MIN_Y;
         pinMain.style.top = MIN_Y;

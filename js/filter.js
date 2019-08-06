@@ -8,15 +8,13 @@
   var filterPrice = document.querySelector('#housing-price'); // фильтр по цене
   var filterRoom = document.querySelector('#housing-rooms'); // фильтр по количеству комнат
   var filterGuests = document.querySelector('#housing-guests'); // фильтр по количеству гостей
-  // -----------------------------------------------------------------------------------
+
   var filterWifi = document.querySelector('#filter-wifi'); // фильтр по наличию wifi
   var filterConditioner = document.querySelector('#filter-conditioner'); // фильтр по наличию кондиционера
   var filterDishwasher = document.querySelector('#filter-dishwasher'); // фильтр по наличию посудомоечной машины
   var filterParking = document.querySelector('#filter-parking'); // фильтр по наличию парковки
   var filterWasher = document.querySelector('#filter-washer'); // фильтр по наличию стиральной машины
   var filterElevator = document.querySelector('#filter-elevator'); // фильтр по наличию лифта
-
-  // window.isFiltered = false; // флаг - не было фильтрации
 
   var onFilterChange = function () {
     window.util.hideCards(); // скрываем открытые карточки с информацией при каждой фильтрации
@@ -38,15 +36,6 @@
     // фильтр по цене
     if (filterPriceValue !== 'any') {
       filterAdverts = filterAdverts.filter(function (it) {
-        // switch (filterPriceValue) {
-        //   case 'low':
-        //     return it.offer.price < 10000;
-        //   case 'middle':
-        //     return it.offer.price >= 10000 && it.offer.price < 50000;
-        //   case 'high':
-        //     return it.offer.price >= 50000;
-        // }
-
         if (filterPriceValue === 'low') {
           return it.offer.price < 10000;
         } else if (filterPriceValue === 'middle') {
@@ -87,12 +76,9 @@
     filterFeatures(filterWasher);
     filterFeatures(filterElevator);
 
-    window.util.deletePins();// удалим все текущие пины со страницы
+    window.util.deletePins(); // удалим все текущие пины со страницы
+    var filterNumber = Math.min(filterAdverts.length, window.data.ADVERTS_COUNT); // проверим кол-во найденных элементов больше пяти?
 
-    var filterNumber = filterAdverts.length;
-    if (filterAdverts.length > window.data.ADVERTS_COUNT) { // проверим кол-во найденных элементов больше пяти?
-      filterNumber = window.data.ADVERTS_COUNT;
-    }
     var fragmentFiltered = window.util.generatePins(filterAdverts, filterNumber); // генерируем фрагмент с отфильтрованными пинами
     window.pin.pinList.appendChild(fragmentFiltered); // выводим метки на страницу
     window.pinElements = document.querySelectorAll('.map__pin'); // обновляем коллекцию меток

@@ -29,13 +29,14 @@
         }
       });
 
-      // добавляем класс --active только текущец карточке
+      // добавляем класс --active только текущей карточке
       pinElement.classList.add('map__pin--active');
 
       Array.from(window.popupList).forEach(function (item) {
-        item.style.display = 'none'; // скрываем все открытые карточки
         if (item.getAttribute('data-id') === pinElement.getAttribute('data-id')) {
           item.style.display = 'block'; // открываем только нужную карточку
+        } else {
+          item.style.display = 'none'; // скрываем все открытые карточки
         }
       });
     };

@@ -37,7 +37,6 @@
     cardTime.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
 
     /* ----------------------------------------------------------- */
-    // вот это надо наверное вынести в функцию
     var cardFeature = cardElement.querySelectorAll('.popup__feature'); // список удобств
 
     // Из карточек удобств локации (блок capacity) удалим все дочерние элементы
@@ -51,16 +50,13 @@
 
     var features = Object.values(advert.offer.features);
 
-    if (features.length !== 0) {
-      features.forEach(function (item) {
-        var feature = document.createElement('li');
-        feature.className = 'popup__feature popup__feature--' + item;
-        cardFeatures.appendChild(feature);
-      });
-    }
+    features.forEach(function (item) {
+      var feature = document.createElement('li');
+      feature.className = 'popup__feature popup__feature--' + item;
+      cardFeatures.appendChild(feature);
+    });
 
     /* ----------------------------------------------------------- */
-    // и это вынести в функцию
     var cardPhoto = cardElement.querySelectorAll('.popup__photo'); // список фотографий
 
     // Удалим все дочерние элементы
@@ -70,17 +66,15 @@
 
     var photos = Object.values(advert.offer.photos);
 
-    if (photos.length !== 0) {
-      photos.forEach(function (item) {
-        var photo = document.createElement('img');
-        photo.className = 'popup__photo';
-        photo.src = item;
-        photo.alt = 'Фотография жилья';
-        photo.width = 45;
-        photo.height = 40;
-        cardFeatures.appendChild(photo);
-      });
-    }
+    photos.forEach(function (item) {
+      var photo = document.createElement('img');
+      photo.className = 'popup__photo';
+      photo.src = item;
+      photo.alt = 'Фотография жилья';
+      photo.width = 45;
+      photo.height = 40;
+      cardFeatures.appendChild(photo);
+    });
 
     cardElement.addEventListener('click', onPopupCloseClick);
     document.addEventListener('keydown', onPopupEscPress);

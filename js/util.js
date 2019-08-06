@@ -41,8 +41,9 @@
       }
     },
 
+    // скрывает все карточки
     hideCards: function () {
-      Array.from(window.popupList).forEach(function (card) { // изначально все карточки скрыты
+      Array.from(window.popupList).forEach(function (card) {
         card.style.display = 'none';
       });
     },

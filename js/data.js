@@ -5,12 +5,12 @@
   var LOAD_URL = 'https://js.dump.academy/keksobooking/data';
   window.ESC_CODE = 27; // код клавиши esc
   window.ENTER_CODE = 13; // код клавиши enter
+  var ADVERTS_COUNT = 5; // максимальное кол-во выводимых на страницу объявлений
 
   var onSuccess = function (data) {
     var serverData = data;
 
     var adverts = []; // массив объявлений
-    var ADVERTS_COUNT = 5;
     var isLoad = false;
 
     // для каждого объекта добавим новый ключ id
