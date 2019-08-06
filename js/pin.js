@@ -7,8 +7,8 @@
   var pinList = document.querySelector('.map__pins');
 
   var pinTemplate = document.querySelector('#pin')
-      .content
-      .querySelector('.map__pin');
+  .content
+  .querySelector('.map__pin');
 
   var renderPin = function (advert) {
     var pinElement = pinTemplate.cloneNode(true);
@@ -21,16 +21,37 @@
     // pinImg.alt = advert.offer.type;
     pinList.appendChild(pinElement);
 
-    // при клике на пин появляется карточка соответствующего объявления
-    pinElement.addEventListener('click', function () {
-      for (var i = 0; i < window.data.popupList.length; i++) {
-        window.data.popupList[i].style.display = 'none'; // скрываем все открытые карточки
-        // открываем только нужную карточку
-        if (window.data.popupList[i].getAttribute('data-id') === pinElement.getAttribute('data-id')) {
-          window.data.popupList[i].style.display = 'block';
+    var onPinClick = function () {
+      // у всех карточек удаляем класс --active
+      Array.from(window.pinElements).forEach(function (item) {
+        if (item.classList.contains('map__pin--active')) {
+          item.classList.remove('map__pin--active');
         }
+      });
+
+      // добавляем класс --active только текущей карточке
+      pinElement.classList.add('map__pin--active');
+
+      Array.from(window.popupList).forEach(function (item) {
+        if (item.getAttribute('data-id') === pinElement.getAttribute('data-id')) {
+          item.style.display = 'block'; // открываем только нужную карточку
+        } else {
+          item.style.display = 'none'; // скрываем все открытые карточки
+        }
+      });
+    };
+
+    var onPinEscPress = function (evt) {
+      if (evt.keycode === window.ENTER_CODE) {
+        onPinClick();
       }
-    });
+    };
+
+    // при клике на пин/ нажатии ENTER появляется карточка соответствующего объявления
+    pinElement.addEventListener('click', onPinClick);
+
+    // при клике на пин появляется карточка соответствующего объявления
+    pinElement.addEventListener('keydown', onPinEscPress);
 
     return pinElement;
   };

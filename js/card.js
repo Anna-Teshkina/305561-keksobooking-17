@@ -1,8 +1,7 @@
 'use strict';
+
 // модуль, который отвечает за создание карточек на странице
 (function () {
-  /* -------------------------------------------------------------------------- */
-  // модуль card.js
   var cardTemplate = document.querySelector('#card')
     .content
     .querySelector('.map__card');
@@ -26,7 +25,7 @@
     var cardCapacity = cardElement.querySelector('.popup__text--capacity'); // количество гостей и комнат
     var cardTime = cardElement.querySelector('.popup__text--time'); // время заезда и выезда
     var cardFeatures = cardElement.querySelector('.popup__features'); // доступные удобства
-    var cardPhotos = cardElement.querySelector('.popup__photos'); //  блок со списком фотографий
+    var cardPhotos = cardElement.querySelector('.popup__photos'); // блок со списком фотографий
 
     cardImg.src = advert.author.avatar;
     cardImg.alt = advert.offer.type;
@@ -38,74 +37,64 @@
     cardTime.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
 
     /* ----------------------------------------------------------- */
-    // вот это надо наверное вынести в функцию
     var cardFeature = cardElement.querySelectorAll('.popup__feature'); // список удобств
 
     // Из карточек удобств локации (блок capacity) удалим все дочерние элементы
-    for (var i = 0; i < cardFeature.length; i++) {
-      cardFeatures.removeChild(cardFeature[i]);
-    }
+    Array.from(cardFeature).forEach(function (feature) {
+      cardFeatures.removeChild(feature);
+    });
 
     // для каждого объявления смотрим, какие удобства есть в локации
     // и выводим, только те, которые указаны в объявлении
     // если удобств нет, блок не выводится
 
     var features = Object.values(advert.offer.features);
-    //  console.log(features);
 
-    if (features.length !== 0) {
-      for (i = 0; i < features.length; i++) {
-        var feature = document.createElement('li');
-        feature.className = 'popup__feature popup__feature--' + features[i];
-        cardFeatures.appendChild(feature);
-      }
-    }
+    features.forEach(function (item) {
+      var feature = document.createElement('li');
+      feature.className = 'popup__feature popup__feature--' + item;
+      cardFeatures.appendChild(feature);
+    });
 
     /* ----------------------------------------------------------- */
-    // и это вынести в функцию
     var cardPhoto = cardElement.querySelectorAll('.popup__photo'); // список фотографий
 
     // Удалим все дочерние элементы
-    for (i = 0; i < cardPhoto.length; i++) {
-      cardPhotos.removeChild(cardPhoto[i]);
-    }
+    Array.from(cardPhoto).forEach(function (item) {
+      cardPhotos.removeChild(item);
+    });
 
     var photos = Object.values(advert.offer.photos);
-    // console.log(photos);
 
-    if (photos.length !== 0) {
-      for (i = 0; i < photos.length; i++) {
-        var photo = document.createElement('img');
-        photo.className = 'popup__photo';
-        photo.src = photos[i];
-        photo.alt = 'Фотография жилья';
-        photo.width = 45;
-        photo.height = 40;
-        cardFeatures.appendChild(photo);
-      }
-    }
+    photos.forEach(function (item) {
+      var photo = document.createElement('img');
+      photo.className = 'popup__photo';
+      photo.src = item;
+      photo.alt = 'Фотография жилья';
+      photo.width = 45;
+      photo.height = 40;
+      cardFeatures.appendChild(photo);
+    });
 
     cardElement.addEventListener('click', onPopupCloseClick);
-    document.addEventListener('keydown', onWindowEscPress);
+    document.addEventListener('keydown', onPopupEscPress);
     return cardElement;
   };
 
   // при нажатии на крестик и esc карточка закрывается
   var onPopupCloseClick = function () {
-    // скрываем все карточки
-    for (var i = 0; i < window.data.popupList.length; i++) {
-      window.data.popupList[i].style.display = 'none';
-    }
+    window.util.hideCards(); // скрываем все карточки
   };
 
-  var onWindowEscPress = function () {
-    // скрываем все карточки
-    for (var i = 0; i < window.data.popupList.length; i++) {
-      window.data.popupList[i].style.display = 'none';
+  var onPopupEscPress = function (evt) {
+    if (evt.keyCode === window.ESC_CODE) {
+      window.util.hideCards(); // скрываем все карточки
     }
   };
 
   window.card = {
     renderCard: renderCard,
+    onPopupEscPress: onPopupEscPress,
+    onPopupCloseClick: onPopupCloseClick
   };
 })();

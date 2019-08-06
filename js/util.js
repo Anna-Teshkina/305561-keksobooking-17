@@ -8,16 +8,6 @@
       return random;
     },
 
-    // случайная генерация true / false
-    // getRandomBoolean: function () {
-    //   // флаг, если произвольноечисло > 0.5 flag = true, иначе - false.
-    //   var flag = true;
-    //   if (Math.random() > 0.5) {
-    //       flag = false;
-    //   }
-    //   return flag;
-    // },
-
     // склонение числительных
     declOfNum: function (number, titles) {
       var cases = [2, 0, 1, 1, 1, 2];
@@ -28,32 +18,48 @@
     generatePins: function (array, count) {
       var fragment = document.createDocumentFragment();
       for (var i = 0; i < count; i++) {
-        // console.log(array[i]);
         fragment.appendChild(window.pin.renderPin(array[i]));
       }
+      return fragment;
+    },
+
+    // генерируем фрагмент с карточками
+    generateCards: function (array) {
+      var fragment = document.createDocumentFragment();
+      array.forEach(function (item) {
+        fragment.appendChild(window.card.renderCard(item));
+      });
       return fragment;
     },
 
     // удаление пинов со страницы
     deletePins: function () {
       var pins = window.pin.pinList.querySelectorAll('.map__pin');
+      // main__pin - первый в разметке, удаляем со второго элемента
       for (var i = 1; i < pins.length; i++) {
         window.pin.pinList.removeChild(pins[i]);
       }
     },
 
+    // скрывает все карточки
+    hideCards: function () {
+      Array.from(window.popupList).forEach(function (card) {
+        card.style.display = 'none';
+      });
+    },
+
     // устанавливает атрибут disabled (для полей формы)
     setDisabledAttribute: function (array) {
-      for (var i = 0; i < array.length; i++) {
-        array[i].disabled = true;
-      }
+      array.forEach(function (item) {
+        item.disabled = true;
+      });
     },
 
     // удаляет атрибут disabled (для полей формы)
     removeDisabledAttribute: function (array) {
-      for (var i = 0; i < array.length; i++) {
-        array[i].disabled = false;
-      }
+      array.forEach(function (item) {
+        item.disabled = false;
+      });
     },
   };
 })();

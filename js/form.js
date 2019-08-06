@@ -58,8 +58,6 @@
   resetBtn.addEventListener('click', function () {
     window.isFormSend = true;
     window.map.setInactiveStatus();
-    // resetForm();
-    // window.map.setInactiveAddress(window.map.xPinMain, window.map.yPinMain);
   });
 
   /* --------------------------------------------------------------- */
@@ -73,6 +71,7 @@
     var customMessage = ''; // сообщение об ошибке
     var rooms = parseInt(selectRooms.value, 10); // кол-во комнат
     var guests = parseInt(selectGuests.value, 10); // кол-во гостей
+
     if ((rooms < guests) && (rooms !== 100) && (guests !== 0)) {
       customMessage = 'Кол-во комнат не может быть меньше кол-ва гостей';
     } else if ((rooms === 100) && (guests !== 0)) {
@@ -80,12 +79,13 @@
     } else if ((rooms !== 100) && (guests === 0)) {
       customMessage = 'Не для гостей доступен только вариант 100 комнат.';
     }
-    // console.log(customMessage);
+
     selectRooms.setCustomValidity(customMessage);
   };
 
   selectRooms.addEventListener('change', setCustomValidationMessage);
   selectGuests.addEventListener('change', setCustomValidationMessage);
+
   /* --------------------------------------------------------------- */
   var showSuccessMessage = function () {
     var successTemplate = document.querySelector('#success')
@@ -95,13 +95,23 @@
     var successElement = successTemplate.cloneNode(true);
     document.body.appendChild(successElement);
 
-    successElement.addEventListener('click', function () {
+    var closeSendSuccessPopup = function () {
       document.body.removeChild(successElement);
-    });
+      document.removeEventListener('keydown', onSendSuccessPopupEsc);
+    };
+
+    var onSendSuccessPopupEsc = function (evt) {
+      if (evt.keyCode === window.ESC_CODE) {
+        closeSendSuccessPopup(successElement);
+        document.removeEventListener('keydown', onSendSuccessPopupEsc);
+      }
+    };
+
+    successElement.addEventListener('click', closeSendSuccessPopup);
+    document.addEventListener('keydown', onSendSuccessPopupEsc);
   };
 
   var onSendSuccess = function () {
-    // console.log('Форма успешно отправлена');
     window.isFormSend = true;
     window.map.setInactiveStatus();
     showSuccessMessage();
@@ -115,10 +125,20 @@
     var errorElement = errorTemplate.cloneNode(true);
     document.body.appendChild(errorElement);
 
-    errorElement.addEventListener('click', function () {
+    var closeSendErrorPopup = function () {
       document.body.removeChild(errorElement);
+      document.removeEventListener('keydown', onSendPopupEsc);
       window.send(new FormData(formAd), onSendSuccess, onSendError);
-    });
+    };
+
+    var onSendPopupEsc = function (evt) {
+      if (evt.keyCode === window.ESC_CODE) {
+        closeSendErrorPopup();
+      }
+    };
+
+    errorElement.addEventListener('click', closeSendErrorPopup);
+    document.addEventListener('keydown', onSendPopupEsc);
   };
 
   // отправка данных на сервер

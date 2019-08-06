@@ -51,9 +51,13 @@
 
     // сброс загруженных изображений
     var uploadPhoto = window.form.formAd.querySelectorAll('img.ad-form__photo');
-    for (var i = 0; i < uploadPhoto.length; i++) {
-      window.upload.photoContainer.removeChild(uploadPhoto[i]);
-    }
+    Array.from(uploadPhoto).forEach(function (photo) {
+      window.upload.photoContainer.removeChild(photo);
+    });
+  };
+
+  var resetFilter = function () {
+    window.filter.filterForm.reset(); // сбрасываем все поля формы
   };
 
   var setInactiveStatus = function () {
@@ -67,22 +71,17 @@
       window.form.formAd.classList.add('ad-form--disabled'); // переводим форму в неактивное состояние
     }
 
-    // вернем пин в исходное состояние
-    setMainPin();
-
-    // удалим все текущие пины со страницы
-    window.util.deletePins();
+    setMainPin(); // вернем пин в исходное состояние
+    setInactiveAddress(xPinMain, yPinMain); // установим в поле адреса первоначальные координаты
+    window.util.deletePins(); // удалим все текущие пины со страницы
+    resetForm(); // сбросим форму
 
     // элементы управления формы (input, select и т.д.) и фильтра должны быть неактивны в исходном состоянии
     window.util.setDisabledAttribute(formElements);
     window.util.setDisabledAttribute(filterElements);
-
-    setInactiveAddress(xPinMain, yPinMain);
-
-    resetForm();
   };
 
-  setInactiveStatus();
+  setInactiveStatus(); // при загрузке страницы форма находится в неактивном состоянии
 
   pinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -118,7 +117,6 @@
       // ограничение для левой координаты: 0px и (1200 - 65) = 1135px
       // расчет координат указан с учетом ширины макера (пункт 4.5 ТЗ)
 
-
       if (pinMain.offsetLeft - shift.x < MIN_X) {
         leftPinMain = MIN_X;
         pinMain.style.left = MIN_X;
@@ -129,21 +127,6 @@
         leftPinMain = pinMain.offsetLeft;
         pinMain.style.left = (pinMain.offsetLeft - shift.x) + 'px';
       }
-
-      // по условию движение метки ограничено по оси Y от 130 до 630
-      // т.к. речь идет именно о положении острого конца пина, то
-      // верхняя координата равна 130 - высота пина;
-      // высота пина равна высоте пика + диаметр метки (=ширин метки)
-      // if (pinMain.offsetTop - shift.y < MIN_Y - PEAK_HEIGHT - widthPinMain) {
-      //   topPinMain = MIN_Y - PEAK_HEIGHT - widthPinMain;
-      //   pinMain.style.top = MIN_Y - PEAK_HEIGHT - widthPinMain;
-      // } else if (pinMain.offsetTop - shift.y > MAX_Y) {
-      //   topPinMain = MAX_Y;
-      //   pinMain.style.top = MAX_Y;
-      // } else {
-      //   topPinMain = pinMain.offsetTop;
-      //   pinMain.style.top = (pinMain.offsetTop - shift.y) + 'px';
-      // }
 
       // по условию движение метки ограничено по оси Y от 130 до 630
       if (pinMain.offsetTop - shift.y < MIN_Y) {
@@ -174,14 +157,32 @@
       window.util.removeDisabledAttribute(formElements);
       window.util.removeDisabledAttribute(filterElements);
 
+      // если isLoad = false - то это первая загрузка данных/ true - данные уже загружены
+      if (!window.data.isLoad) {
+        var checkInterval = setInterval(function () {
+          if (window.data !== undefined) {
+            clearInterval(checkInterval);
 
-      var checkInterval = setInterval(function () {
-        if (window.data !== undefined) {
-          clearInterval(checkInterval);
-          var fragmentPin = window.util.generatePins(window.data.adverts, window.data.ADVERTS_COUNT); // генерируем фрагмент с пинами
-          window.pin.pinList.appendChild(fragmentPin); // выводим метки на страницу
-        }
-      }, 100);
+            var fragmentPin = window.util.generatePins(window.data.adverts, window.data.ADVERTS_COUNT); // генерируем фрагмент с пинами
+            window.pin.pinList.appendChild(fragmentPin); // выводим метки на страницу
+
+            var fragmentCard = window.util.generateCards(window.data.adverts); // генерируем фрагмент с карточками объявлений
+            document.body.appendChild(fragmentCard); // выводим все карточки на страницу
+
+            window.popupList = document.querySelectorAll('.popup'); // коллекция карточек
+            window.pinElements = document.querySelectorAll('.map__pin'); // коллекция меток
+            window.util.hideCards(); // изначально все карточки скрыты
+            window.data.isLoad = true;
+          }
+        }, 100);
+      } else {
+        window.util.deletePins(); // удалить все текущие пины со страницы
+        resetFilter(); // сброс фильтра
+        var fragmentPin = window.util.generatePins(window.data.adverts, window.data.ADVERTS_COUNT); // генерируем фрагмент с пинами
+        window.pin.pinList.appendChild(fragmentPin); // выводим метки на страницу
+        window.util.hideCards(); // скрываем все открытые карточки
+        window.pinElements = document.querySelectorAll('.map__pin'); // обновляем коллекцию меток
+      }
 
       if (!dragged) {
         startPinCoords = {

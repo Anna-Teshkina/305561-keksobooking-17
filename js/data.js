@@ -3,60 +3,26 @@
 // модуль, который формирует массив данных - метки объявлений
 (function () {
   var LOAD_URL = 'https://js.dump.academy/keksobooking/data';
+  window.ESC_CODE = 27; // код клавиши esc
+  window.ENTER_CODE = 13; // код клавиши enter
+  var ADVERTS_COUNT = 5; // максимальное кол-во выводимых на страницу объявлений
+
   var onSuccess = function (data) {
     var serverData = data;
-    // console.log(data);
-    var adverts = []; // массив объявлений
-    var ADVERTS_COUNT = 5;
 
-    for (var i = 0; i < serverData.length; i++) {
-      var advertItem = serverData[i];
+    var adverts = []; // массив объявлений
+    var isLoad = false;
+
+    // для каждого объекта добавим новый ключ id
+    serverData.forEach(function (item, i) {
+      var advertItem = item;
       advertItem.id = i;
       adverts.push(advertItem);
-    }
-
-    // console.log(adverts);
-    // -------------------------------------------------------------------------------------------------
-    var fragmentCard = document.createDocumentFragment(); // генерируем фрагмент с карточками объявлений
-    for (i = 0; i < ADVERTS_COUNT; i++) {
-      fragmentCard.appendChild(window.card.renderCard(adverts[i]));
-    }
-
-    document.body.appendChild(fragmentCard); // выводим все карточки на страницу
-    var popupList = document.querySelectorAll('.popup');
-    for (i = 0; i < popupList.length; i++) { // изначально все карточки скрыты
-      popupList[i].style.display = 'none';
-    }
-    // -------------------------------------------------------------------------------------------------
-
-    var filterType = document.querySelector('#housing-type'); // фильтр по типу жилья
-
-    filterType.addEventListener('change', function () {
-      var filterTypeValue = filterType.value;
-
-      var filterAdverts = adverts;
-      if (filterTypeValue !== 'any') {
-        filterAdverts = adverts.filter(function (it) {
-          return it.offer.type === filterTypeValue;
-        });
-      }
-
-      // удалим все текущие пины со страницы
-      window.util.deletePins();
-
-      // проверим кол-во найденных элементов больше пяти?
-      var filterNumber = filterAdverts.length;
-      if (filterAdverts.length > ADVERTS_COUNT) {
-        filterNumber = ADVERTS_COUNT;
-      }
-      var fragmentFiltered = window.util.generatePins(filterAdverts, filterNumber);
-
-      window.pin.pinList.appendChild(fragmentFiltered); // выводим метки на страницу
     });
 
     window.data = {
       adverts: adverts,
-      popupList: popupList,
+      isLoad: isLoad,
       ADVERTS_COUNT: ADVERTS_COUNT
     };
   };
@@ -67,14 +33,23 @@
     .querySelector('.error');
 
     var errorElement = errorTemplate.cloneNode(true);
-    // console.log(errorElement);
     document.body.appendChild(errorElement);
 
-    errorElement.addEventListener('click', function () {
+    var closeLoadErrorPopup = function () {
       document.body.removeChild(errorElement);
+      document.removeEventListener('keydown', onLoadPopupEsc);
       window.load(LOAD_URL, onSuccess, onError);
-    });
+    };
+
+    var onLoadPopupEsc = function (evt) {
+      if (evt.keyCode === window.ESC_CODE) {
+        closeLoadErrorPopup();
+      }
+    };
+
+    document.addEventListener('keydown', onLoadPopupEsc);
+    errorElement.addEventListener('click', closeLoadErrorPopup);
   };
 
-  window.load(LOAD_URL, onSuccess, window.onError);
+  window.load(LOAD_URL, onSuccess, onError);
 })();
