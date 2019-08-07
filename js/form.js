@@ -73,11 +73,11 @@
     var rooms = parseInt(selectRooms.value, 10); // кол-во комнат
     var guests = parseInt(selectGuests.value, 10); // кол-во гостей
 
-    if ((rooms < guests) && (rooms !== MAX_ROOMS) && (guests !== 0)) {
+    if ((rooms < guests) && (rooms !== MAX_ROOMS) && guests) {
       customMessage = 'Кол-во комнат не может быть меньше кол-ва гостей';
-    } else if ((rooms === MAX_ROOMS) && (guests !== 0)) {
+    } else if ((rooms === MAX_ROOMS) && guests) {
       customMessage = 'Выберите вариант: не для гостей.';
-    } else if ((rooms !== MAX_ROOMS) && (guests === 0)) {
+    } else if ((rooms !== MAX_ROOMS) && !guests) {
       customMessage = 'Не для гостей доступен только вариант 100 комнат.';
     }
 
