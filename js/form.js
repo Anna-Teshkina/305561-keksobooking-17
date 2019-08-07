@@ -2,6 +2,7 @@
 
 // модуль, который работает с формой объявления
 (function () {
+  var MAX_ROOMS = 100;
   var formAd = document.querySelector('.ad-form');
 
   // Поле «Тип жилья» влияет на минимальное значение поля «Цена за ночь»
@@ -72,11 +73,11 @@
     var rooms = parseInt(selectRooms.value, 10); // кол-во комнат
     var guests = parseInt(selectGuests.value, 10); // кол-во гостей
 
-    if ((rooms < guests) && (rooms !== 100) && (guests !== 0)) {
+    if ((rooms < guests) && (rooms !== MAX_ROOMS) && (guests !== 0)) {
       customMessage = 'Кол-во комнат не может быть меньше кол-ва гостей';
-    } else if ((rooms === 100) && (guests !== 0)) {
+    } else if ((rooms === MAX_ROOMS) && (guests !== 0)) {
       customMessage = 'Выберите вариант: не для гостей.';
-    } else if ((rooms !== 100) && (guests === 0)) {
+    } else if ((rooms !== MAX_ROOMS) && (guests === 0)) {
       customMessage = 'Не для гостей доступен только вариант 100 комнат.';
     }
 
@@ -87,12 +88,9 @@
   selectGuests.addEventListener('change', setCustomValidationMessage);
 
   /* --------------------------------------------------------------- */
-  var showSuccessMessage = function () {
-    var successTemplate = document.querySelector('#success')
-    .content
-    .querySelector('.success');
 
-    var successElement = successTemplate.cloneNode(true);
+  var showSuccessMessage = function () {
+    var successElement = window.server.successTemplate.cloneNode(true);
     document.body.appendChild(successElement);
 
     var closeSendSuccessPopup = function () {
@@ -118,17 +116,13 @@
   };
 
   var onSendError = function () {
-    var errorTemplate = document.querySelector('#error')
-    .content
-    .querySelector('.error');
-
-    var errorElement = errorTemplate.cloneNode(true);
+    var errorElement = window.server.errorTemplate.cloneNode(true);
     document.body.appendChild(errorElement);
 
     var closeSendErrorPopup = function () {
       document.body.removeChild(errorElement);
       document.removeEventListener('keydown', onSendPopupEsc);
-      window.send(new FormData(formAd), onSendSuccess, onSendError);
+      window.server.send(new FormData(formAd), onSendSuccess, onSendError);
     };
 
     var onSendPopupEsc = function (evt) {
@@ -143,11 +137,9 @@
 
   // отправка данных на сервер
   formAd.addEventListener('submit', function (evt) {
-    window.send(new FormData(formAd), onSendSuccess, onSendError);
+    window.server.send(new FormData(formAd), onSendSuccess, onSendError);
     evt.preventDefault();
   });
 
-  window.form = {
-    formAd: formAd,
-  };
+  window.formAd = formAd;
 })();

@@ -18,7 +18,7 @@
     generatePins: function (array, count) {
       var fragment = document.createDocumentFragment();
       for (var i = 0; i < count; i++) {
-        fragment.appendChild(window.pin.renderPin(array[i]));
+        fragment.appendChild(window.pin.render(array[i]));
       }
       return fragment;
     },
@@ -27,7 +27,7 @@
     generateCards: function (array) {
       var fragment = document.createDocumentFragment();
       array.forEach(function (item) {
-        fragment.appendChild(window.card.renderCard(item));
+        fragment.appendChild(window.card.render(item));
       });
       return fragment;
     },

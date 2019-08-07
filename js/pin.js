@@ -10,7 +10,7 @@
   .content
   .querySelector('.map__pin');
 
-  var renderPin = function (advert) {
+  var render = function (advert) {
     var pinElement = pinTemplate.cloneNode(true);
     pinElement.dataset.id = advert.id;
     var pinImg = pinElement.querySelector('img');
@@ -57,7 +57,7 @@
   };
 
   window.pin = {
-    renderPin: renderPin,
+    render: render,
     pinList: pinList
   };
 })();

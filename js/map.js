@@ -18,7 +18,7 @@
   var map = document.querySelector('.map'); // блок карты
   var mapFilters = document.querySelector('.map__filters'); // блок фильтра
 
-  var formElements = window.form.formAd.querySelectorAll('fieldset'); // поля формы
+  var formElements = window.formAd.querySelectorAll('fieldset'); // поля формы
   var filterElements = mapFilters.querySelectorAll('fieldset, select'); // поля фильтра
 
   var pinMain = map.querySelector('.map__pin--main'); // метка
@@ -29,8 +29,8 @@
     pinMain.style.left = PIN_START_X + 'px';
   };
 
-  var widthPinMain = pinMain.offsetWidth; // ширина метки
-  var radiusPinMain = widthPinMain / 2; // радиус метки
+  var widthPinMain = map.querySelector('.map__pin--main').offsetWidth; // ширина метки
+  var radiusPinMain = Math.round(widthPinMain / 2); // радиус метки
 
   var leftPinMain = PIN_START_X; // расстояние от метки до левого края карты
   var topPinMain = PIN_START_Y; // расстояние от метки до верха карты
@@ -38,7 +38,7 @@
   var xPinMain = leftPinMain + radiusPinMain; // начальная координата метки до смещения (ось абсцисс)
   var yPinMain = topPinMain + radiusPinMain; // начальная координата метки до смещения (ось ординат)
 
-  var inputAddress = window.form.formAd.querySelector('#address'); // поле адреса
+  var inputAddress = window.formAd.querySelector('#address'); // поле адреса
   window.isFormSend = false;
 
   var setInactiveAddress = function (x, y) {
@@ -46,18 +46,18 @@
   };
 
   var resetForm = function () {
-    window.form.formAd.reset(); // сбрасываем все поля формы
+    window.formAd.reset(); // сбрасываем все поля формы
     window.upload.preview.src = 'img/muffin-grey.svg'; // сброс аватара пользователя
 
     // сброс загруженных изображений
-    var uploadPhoto = window.form.formAd.querySelectorAll('img.ad-form__photo');
-    Array.from(uploadPhoto).forEach(function (photo) {
+    var uploadPhotos = window.formAd.querySelectorAll('img.ad-form__photo');
+    Array.from(uploadPhotos).forEach(function (photo) {
       window.upload.photoContainer.removeChild(photo);
     });
   };
 
   var resetFilter = function () {
-    window.filter.filterForm.reset(); // сбрасываем все поля формы
+    window.filterForm.reset(); // сбрасываем все поля формы
   };
 
   var setInactiveStatus = function () {
@@ -68,7 +68,7 @@
     // если деактивация вызвана отправкой формы
     if (window.isFormSend) {
       map.classList.add('map--faded'); // переводим карту в неактивное состояние
-      window.form.formAd.classList.add('ad-form--disabled'); // переводим форму в неактивное состояние
+      window.formAd.classList.add('ad-form--disabled'); // переводим форму в неактивное состояние
     }
 
     setMainPin(); // вернем пин в исходное состояние
@@ -151,37 +151,40 @@
 
     var onMouseUp = function () {
       map.classList.remove('map--faded'); // переводим карту в активное состояние
-      window.form.formAd.classList.remove('ad-form--disabled'); // переводим форму в активное состояние
+      window.formAd.classList.remove('ad-form--disabled'); // переводим форму в активное состояние
 
       // в активном состоянии элементы управления формы и фильтра (input, select и т.д.) должны быть активны
       window.util.removeDisabledAttribute(formElements);
       window.util.removeDisabledAttribute(filterElements);
 
-      // если isLoad = false - то это первая загрузка данных/ true - данные уже загружены
-      if (!window.data.isLoad) {
-        var checkInterval = setInterval(function () {
-          if (window.data !== undefined) {
-            clearInterval(checkInterval);
+      var generatePinsAndCards = function () {
+        var fragmentPin = window.util.generatePins(window.data.adverts, window.data.ADVERTS_COUNT); // генерируем фрагмент с пинами
+        window.pin.pinList.appendChild(fragmentPin); // выводим метки на страницу
 
-            var fragmentPin = window.util.generatePins(window.data.adverts, window.data.ADVERTS_COUNT); // генерируем фрагмент с пинами
-            window.pin.pinList.appendChild(fragmentPin); // выводим метки на страницу
+        var fragmentCard = window.util.generateCards(window.data.adverts); // генерируем фрагмент с карточками объявлений
+        document.body.appendChild(fragmentCard); // выводим все карточки на страницу
 
-            var fragmentCard = window.util.generateCards(window.data.adverts); // генерируем фрагмент с карточками объявлений
-            document.body.appendChild(fragmentCard); // выводим все карточки на страницу
+        window.popupList = document.querySelectorAll('.popup'); // коллекция карточек
+        window.pinElements = document.querySelectorAll('.map__pin'); // коллекция меток
+        window.util.hideCards(); // изначально все карточки скрыты
+        window.data.isLoad = true;
+      };
 
-            window.popupList = document.querySelectorAll('.popup'); // коллекция карточек
-            window.pinElements = document.querySelectorAll('.map__pin'); // коллекция меток
-            window.util.hideCards(); // изначально все карточки скрыты
-            window.data.isLoad = true;
-          }
-        }, 100);
-      } else {
+      var updatePins = function () {
         window.util.deletePins(); // удалить все текущие пины со страницы
         resetFilter(); // сброс фильтра
         var fragmentPin = window.util.generatePins(window.data.adverts, window.data.ADVERTS_COUNT); // генерируем фрагмент с пинами
         window.pin.pinList.appendChild(fragmentPin); // выводим метки на страницу
         window.util.hideCards(); // скрываем все открытые карточки
         window.pinElements = document.querySelectorAll('.map__pin'); // обновляем коллекцию меток
+      };
+
+      if (!window.data.isLoad && window.data) {
+        generatePinsAndCards();
+      } else if (!window.data.isLoad && !window.data) {
+        window.generatePinsAndCards = generatePinsAndCards;
+      } else {
+        updatePins();
       }
 
       if (!dragged) {

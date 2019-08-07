@@ -2,7 +2,10 @@
 
 // фильтр пинов
 (function () {
-  var filterForm = document.querySelector('.map__filters'); // блок с фильтром
+  var MIN_SELECT_PRICE = 10000;
+  var MAX_SELECT_PRICE = 50000;
+
+  window.filterForm = document.querySelector('.map__filters'); // блок с фильтром
 
   var filterType = document.querySelector('#housing-type'); // фильтр по типу жилья
   var filterPrice = document.querySelector('#housing-price'); // фильтр по цене
@@ -37,11 +40,11 @@
     if (filterPriceValue !== 'any') {
       filterAdverts = filterAdverts.filter(function (it) {
         if (filterPriceValue === 'low') {
-          return it.offer.price < 10000;
+          return it.offer.price < MIN_SELECT_PRICE;
         } else if (filterPriceValue === 'middle') {
-          return it.offer.price >= 10000 && it.offer.price < 50000;
+          return it.offer.price >= MIN_SELECT_PRICE && it.offer.price < MAX_SELECT_PRICE;
         } else {
-          return it.offer.price >= 50000;
+          return it.offer.price >= MAX_SELECT_PRICE;
         }
       });
     }
@@ -84,9 +87,5 @@
     window.pinElements = document.querySelectorAll('.map__pin'); // обновляем коллекцию меток
   };
 
-  filterForm.addEventListener('change', window.debounce(onFilterChange));
-
-  window.filter = {
-    filterForm: filterForm
-  };
+  window.filterForm.addEventListener('change', window.debounce(onFilterChange));
 })();

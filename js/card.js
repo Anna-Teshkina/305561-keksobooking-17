@@ -2,6 +2,9 @@
 
 // модуль, который отвечает за создание карточек на странице
 (function () {
+  var PHOTO_WIDTH = 45;
+  var PHOTO_HEIGHT = 40;
+
   var cardTemplate = document.querySelector('#card')
     .content
     .querySelector('.map__card');
@@ -13,7 +16,7 @@
     'palace': 'Дворец'
   };
 
-  var renderCard = function (advert) {
+  var render = function (advert) {
     var cardElement = cardTemplate.cloneNode(true);
     cardElement.dataset.id = advert.id;
 
@@ -24,8 +27,8 @@
     var cardType = cardElement.querySelector('.popup__type'); // тип жилья
     var cardCapacity = cardElement.querySelector('.popup__text--capacity'); // количество гостей и комнат
     var cardTime = cardElement.querySelector('.popup__text--time'); // время заезда и выезда
-    var cardFeatures = cardElement.querySelector('.popup__features'); // доступные удобства
-    var cardPhotos = cardElement.querySelector('.popup__photos'); // блок со списком фотографий
+    var feturesBlock = cardElement.querySelector('.popup__features'); // блок со списком удобств
+    var photosBlock = cardElement.querySelector('.popup__photos'); // блок со списком фотографий
 
     cardImg.src = advert.author.avatar;
     cardImg.alt = advert.offer.type;
@@ -37,11 +40,11 @@
     cardTime.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
 
     /* ----------------------------------------------------------- */
-    var cardFeature = cardElement.querySelectorAll('.popup__feature'); // список удобств
+    var cardFeatures = cardElement.querySelectorAll('.popup__feature'); // список удобств
 
     // Из карточек удобств локации (блок capacity) удалим все дочерние элементы
-    Array.from(cardFeature).forEach(function (feature) {
-      cardFeatures.removeChild(feature);
+    Array.from(cardFeatures).forEach(function (feature) {
+      feturesBlock.removeChild(feature);
     });
 
     // для каждого объявления смотрим, какие удобства есть в локации
@@ -53,15 +56,15 @@
     features.forEach(function (item) {
       var feature = document.createElement('li');
       feature.className = 'popup__feature popup__feature--' + item;
-      cardFeatures.appendChild(feature);
+      feturesBlock.appendChild(feature);
     });
 
     /* ----------------------------------------------------------- */
-    var cardPhoto = cardElement.querySelectorAll('.popup__photo'); // список фотографий
+    var cardPhotos = cardElement.querySelectorAll('.popup__photo'); // список фотографий
 
     // Удалим все дочерние элементы
-    Array.from(cardPhoto).forEach(function (item) {
-      cardPhotos.removeChild(item);
+    Array.from(cardPhotos).forEach(function (item) {
+      photosBlock.removeChild(item);
     });
 
     var photos = Object.values(advert.offer.photos);
@@ -71,9 +74,9 @@
       photo.className = 'popup__photo';
       photo.src = item;
       photo.alt = 'Фотография жилья';
-      photo.width = 45;
-      photo.height = 40;
-      cardFeatures.appendChild(photo);
+      photo.width = PHOTO_WIDTH;
+      photo.height = PHOTO_HEIGHT;
+      feturesBlock.appendChild(photo);
     });
 
     cardElement.addEventListener('click', onPopupCloseClick);
@@ -93,7 +96,7 @@
   };
 
   window.card = {
-    renderCard: renderCard,
+    render: render,
     onPopupEscPress: onPopupEscPress,
     onPopupCloseClick: onPopupCloseClick
   };
